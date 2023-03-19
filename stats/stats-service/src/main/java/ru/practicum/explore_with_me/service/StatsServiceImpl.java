@@ -12,7 +12,6 @@ import ru.practicum.explore_with_me.model.Stat;
 import ru.practicum.explore_with_me.repositiry.StatRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,15 +50,22 @@ public class StatsServiceImpl implements StatsService {
      */
     @Override
     public List<StatsDtoForView> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
-        List<StatDto> result = new ArrayList<>();
+        List<StatDto> result;
         if (unique) {
             if (uris.isEmpty()) {
-                //Если нет эндпоинтов, то вывести список всех эндпоинтов и их посещений уникальными
+                //Если нет эндпоинтов, то вывести список всех уникальных эндпоинтов и их посещений
                 // пользователями с уникальными IP-адресами.
-                result = statRepository.findAllWhenUriIsEmpty(start, end);
+                result = statRepository.findAllUniqueWhenUriIsEmpty(start, end);
+            } else {
+                //Если эндпоинты есть, то поиск по ним.
+                result = statRepository.findAllUniqueWhenUriIsNotEmpty(start, end, uris);
             }
-            //Если эндпоинты есть, то поиск по ним.
-//            result = statRepository.
+        } else {
+            if (uris.isEmpty()) {
+                result = statRepository.findAllWhenUriIsNotEmpty(start, end);
+            } else {
+                result = statRepository.findAllWhenStarEndUris(start, end, uris);
+            }
         }
 
         return result.stream().map(statMapper::mapToDtoForView).collect(Collectors.toList());
