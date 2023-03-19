@@ -1,9 +1,13 @@
 package ru.practicum.explore_with_me.model;
 
+import lombok.*;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+
 /**
- * EndpointHit{
+ * Stat{
  * id	integer($int64)
  * readOnly: true
  * example: 1
@@ -21,10 +25,26 @@ import java.time.LocalDateTime;
  * example: 2022-09-06 11:00:23
  * Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
  */
-public class EndPoint {
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+@Entity
+@Table(name = "stats")
+public class Stat {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false, unique = true)
     private Long id;
-    private String app;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "app_id")
+    private Application app;
+    @Column(name = "uri", nullable = false)
     private String uri;
+    @Column(name = "ip", nullable = false)
     private String ip;
+    @Column(name = "timestamp", nullable = false)
     private LocalDateTime timestamp;
 }
