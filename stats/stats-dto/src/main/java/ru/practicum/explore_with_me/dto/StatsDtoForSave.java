@@ -30,7 +30,6 @@ public class StatsDtoForSave {
     /**
      * Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
      */
-    @NotBlank(message = "Время сохранения в БД должно быть не пустым.")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 }
