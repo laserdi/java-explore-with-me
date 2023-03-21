@@ -1,18 +1,24 @@
 package ru.practicum.explore_with_me.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
+@NoArgsConstructor    // используется при десериализации джексоном)
 @AllArgsConstructor
 public class StatsDtoForSave {
+    /**
+     * Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
+     */
+
+    @NotBlank(message = "Время сохранения в БД должно быть не пустым.")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime timestamp;
     /**
      * {
      * "app": "ewm-main-service",
@@ -22,19 +28,10 @@ public class StatsDtoForSave {
      * }
      */
     private Long id;
-    @NotNull(message = "Имя приложения должно быть не null.")
     @NotBlank(message = "Имя приложения должно быть не пустым.")
     private String app;
-    @NotNull(message = "Строка, по которой сохраняется обращение в БД должна быть не null.")
     @NotBlank(message = "Строка, по которой сохраняется обращение в БД должна быть не пустой.")
     private String uri;
-    @NotNull(message = "IP-адрес, с которого идёт запрос не должен быть null для сохранения в БД.")
     @NotBlank(message = "IP-адрес, с которого идёт запрос не должен быть пустым для сохранения в БД.")
     private String ip;
-    /**
-     * Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
-     */
-    @NotNull(message = "Время сохранения в БД должно быть не null.")
-    @NotBlank(message = "Время сохранения в БД должно быть не пустым.")
-    private String timestamp;
 }

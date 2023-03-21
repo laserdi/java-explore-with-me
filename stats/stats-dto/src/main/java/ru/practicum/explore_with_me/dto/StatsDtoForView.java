@@ -13,13 +13,13 @@ public class StatsDtoForView {
     /**
      * Название сервиса.
      */
-    String app;
+    private String app;
     /**
      * URI сервиса.
      */
-    String uri;
+    private String uri;
     /**
      * Количество просмотров.
      */
-    Long hits;
+    private Long hits;
 }

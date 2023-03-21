@@ -23,7 +23,7 @@ public class StatsClient {
      * <p>Источник здесь.</p>
      * <a href="https://for-each.dev/lessons/b/-spring-value-annotation">...</a>
      */
-    @Value("${value.from.file.app.properties.statsServerUrl}")
+    @Value("${statsServerUrl}")
     private String statsServer;
     /**
      * RestTemplate предусматривает API более высокого уровня в отличие от клиентских библиотек HTTP.
@@ -38,7 +38,7 @@ public class StatsClient {
      * {{baseUrl}}/stats?start=2020-05-05 00:00:00&end=2035-05-05 00:00:00&uris={{uri}}
      * <p>Помните, что URI-шаблоны автоматически кодируются, как показано в следующем примере:</p>
      * <p>restTemplate.getForObject("https://example.com/hotel list", String.class);</p>
-     * // Результат запроса по "https://example.com/hotel%20list"
+     * Результат запроса по "https://example.com/hotel%20list"
      * @return список посещений для разных эндпоинтов.
      */
     public ResponseEntity<List<StatsDtoForView>> getStats(LocalDateTime start, LocalDateTime end,
@@ -64,13 +64,13 @@ public class StatsClient {
 
         restTemplate = new RestTemplate();
         String uri = statsServer + "/stats?start={start}&end={end}&{uris}&{unique}";
-        log.info("** GET STATS: **\t\t" + uri);
+        log.info("** GET STATS: **\t\t{}", uri);
         ParameterizedTypeReference<List<StatsDtoForView>> parTypeRef =
                 new ParameterizedTypeReference<>() {
                 };
         ResponseEntity<List<StatsDtoForView>> response = restTemplate.exchange(uri, HttpMethod.GET, requestEntity,
                 parTypeRef, uriVariables);
-        System.out.println(response);
+        log.info(response.toString());
         return response;
     }
 
