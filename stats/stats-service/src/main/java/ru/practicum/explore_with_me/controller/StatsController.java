@@ -29,7 +29,6 @@ public class StatsController {
     @GetMapping("/stats")
     @ResponseStatus(HttpStatus.OK)
     public List<StatsDtoForView> getStats(@RequestParam("start") LocalDateTime start,
-//    public Object getStats(@RequestParam("start") String startS,
                                           @RequestParam("end") LocalDateTime end,
                                           @RequestParam(value = "uris", required = false) List<String> uris,
                                           @RequestParam(value = "unique", defaultValue = "false") boolean unique) {
@@ -46,7 +45,6 @@ public class StatsController {
     @Transactional
     public void add(@Valid @RequestBody StatsDtoForSave statsDtoForSave) {
         log.info("Сохранение статистики {}.", statsDtoForSave);
-
         statsService.save(statsDtoForSave);
     }
 }
