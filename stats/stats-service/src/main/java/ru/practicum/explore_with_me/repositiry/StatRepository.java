@@ -2,7 +2,7 @@ package ru.practicum.explore_with_me.repositiry;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.explore_with_me.dto.StatDto;
+import ru.practicum.explore_with_me.dto.StatWithHits;
 import ru.practicum.explore_with_me.model.Stat;
 
 import java.time.LocalDateTime;
@@ -17,33 +17,32 @@ public interface StatRepository extends JpaRepository<Stat, Long> {
      * @param end   момент окончания периода.
      * @return статистику в формате другого класса (с подсчётом посещений).
      */
-    //@Query("select s from Stat s where s.timestamp > ?1 and s.timestamp < ?2")
-    @Query("select new ru.practicum.explore_with_me.dto.StatDto(s.app, s.uri, count (distinct s.ip))" +
+    @Query("select new ru.practicum.explore_with_me.dto.StatWithHits(s.app.app, s.uri, count (distinct s.ip))" +
             "from Stat s " +
             "where s.timestamp between ?1 and ?2 " +
             "group by s.app, s.uri " +
             "order by count (distinct s.ip) desc")
-    List<StatDto> findAllUniqueWhenUriIsEmpty(LocalDateTime start, LocalDateTime end);
+    List<StatWithHits> findAllUniqueWhenUriIsEmpty(LocalDateTime start, LocalDateTime end);
 
-    @Query("select new ru.practicum.explore_with_me.dto.StatDto(s.app, s.uri, count (distinct s.ip)) "
+    @Query("select new ru.practicum.explore_with_me.dto.StatWithHits(s.app.app, s.uri, count (distinct s.ip)) "
             + "from Stat s "
             + "where s.timestamp between ?1 and ?2 "
             + "and s.uri in (?3)"
             + "group by s.app, s.uri "
             + "order by count (distinct s.ip) desc ")
-    List<StatDto> findAllUniqueWhenUriIsNotEmpty(LocalDateTime start, LocalDateTime end, List<String> uris);
+    List<StatWithHits> findAllUniqueWhenUriIsNotEmpty(LocalDateTime start, LocalDateTime end, List<String> uris);
 
-    @Query("select new ru.practicum.explore_with_me.dto.StatDto(s.app, s.uri, count(s.ip)) "
+    @Query("select new ru.practicum.explore_with_me.dto.StatWithHits(s.app.app, s.uri, count(s.ip)) "
             + "from Stat s where s.timestamp between ?1 and ?2 "
             + " group by s.app, s.uri "
             + " order by count(s.ip) desc")
-    List<StatDto> findAllWhenUriIsEmpty(LocalDateTime start, LocalDateTime end);
+    List<StatWithHits> findAllWhenUriIsEmpty(LocalDateTime start, LocalDateTime end);
 
-    @Query("select new ru.practicum.explore_with_me.dto.StatDto(s.app, s.uri, count (s.ip))"
+    @Query("select new ru.practicum.explore_with_me.dto.StatWithHits(s.app.app, s.uri, count (s.ip))"
             + "from Stat s "
             + "where s.timestamp between ?1 and ?2 "
             + "and s.uri in (?3)"
             + "group by s.app, s.uri "
             + "order by count (s.ip) desc")
-    List<StatDto> findAllWhenStarEndUris(LocalDateTime start, LocalDateTime end, List<String> uris);
+    List<StatWithHits> findAllWhenStarEndUris(LocalDateTime start, LocalDateTime end, List<String> uris);
 }

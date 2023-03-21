@@ -16,5 +16,5 @@ public interface ApplicationService {
      * Сохранить новую запись о новом приложении в БД.
      * @param application приложение.
      */
-    void save(Application application);
+    Application save(Application application);
 }

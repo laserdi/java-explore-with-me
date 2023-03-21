@@ -18,10 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatsController {
     private final StatsService statsService;
-// TODO: 21.03.2023 Удалить.
-//    @Value("${svc.date.time.formatter}")
-//    private String dateTimeFormatterPattern;
-//
 
     /**
      * Получить статистику.
@@ -34,12 +30,13 @@ public class StatsController {
                                           @RequestParam(value = "unique", defaultValue = "false") boolean unique) {
         log.info("Получение статистики за период с {} по {} по эндпоинтам ({}). unique = {}.", start, end,
                 uris, unique);
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormatterPattern);
-//        LocalDateTime start = LocalDateTime.parse(startS, formatter);
-//        LocalDateTime end = LocalDateTime.parse(endS, formatter);
         return statsService.getStats(start, end, uris, unique);
     }
 
+    /**
+     * Сохранить обращение к энжпоинту сервиса.
+     * @param statsDtoForSave входящая информация.
+     */
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional

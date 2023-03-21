@@ -29,8 +29,9 @@ public class ApplicationServiceImpl implements ApplicationService {
      * @param application приложение.
      */
     @Override
-    public void save(Application application) {
-        applicationRepository.save(application);
+    public Application save(Application application) {
+        Application app = applicationRepository.save(application);
         log.info("Выполнено сохранение записи о новом приложении {}.", application);
+        return app;
     }
 }

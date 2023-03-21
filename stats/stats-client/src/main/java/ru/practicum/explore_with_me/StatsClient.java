@@ -20,17 +20,17 @@ import java.util.Map;
 @Slf4j
 public class StatsClient {
     /**
+     * RestTemplate предусматривает API более высокого уровня в отличие от клиентских библиотек HTTP.
+     * Он позволяет с легкостью вызывать конечные точки REST в одной строке. Он раскрывает следующие группы
+     * <a href="https://javarush.com/quests/lectures/questspring.level06.lecture00">перегруженных методов.</a>
+     */
+    private final RestTemplate restTemplate;
+    /**
      * <p>Источник здесь.</p>
      * <a href="https://for-each.dev/lessons/b/-spring-value-annotation">...</a>
      */
     @Value("${statsServerUrl}")
     private String statsServer;
-    /**
-     * RestTemplate предусматривает API более высокого уровня в отличие от клиентских библиотек HTTP.
-     * Он позволяет с легкостью вызывать конечные точки REST в одной строке. Он раскрывает следующие группы
-     * <a href="https://javarush.com/quests/lectures/questspring.level06.lecture00">перегруженных методов.</a>
-     */
-    private RestTemplate restTemplate;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
@@ -62,7 +62,6 @@ public class StatsClient {
                 "uris", urisForExchange.toString(),
                 "unique", unique);
 
-        restTemplate = new RestTemplate();
         String uri = statsServer + "/stats?start={start}&end={end}&{uris}&{unique}";
         log.info("** GET STATS: **\t\t{}", uri);
         ParameterizedTypeReference<List<StatsDtoForView>> parTypeRef =

@@ -7,8 +7,6 @@ import javax.persistence.*;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@AllArgsConstructor
-@Builder(toBuilder = true)
 @Entity
 @Table(name = "applications")
 public class Application {

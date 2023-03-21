@@ -27,10 +27,7 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
-//@AllArgsConstructor
-//@Builder(toBuilder = true)
 @Entity
 @Table(name = "stats")
 public class Stat {

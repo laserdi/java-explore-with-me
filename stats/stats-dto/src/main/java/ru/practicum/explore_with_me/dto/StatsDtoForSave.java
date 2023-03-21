@@ -8,16 +8,15 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-//@RequiredArgsConstructor
 @NoArgsConstructor    // используется при десериализации джексоном)
 @AllArgsConstructor
 public class StatsDtoForSave {
     /**
      * {
-     * "app": "ewm-main-service",
-     * "uri": "/events/1",
-     * "ip": "192.163.0.1",
-     * "timestamp": "2022-09-06 11:00:23"
+     * <p>"app": "ewm-main-service",</p>
+     * <p>"uri": "/events/1",</p>
+     * <p>"ip": "192.163.0.1",</p>
+     * <p>"timestamp": "2022-09-06 11:00:23"</p>
      * }
      */
     private Long id;
