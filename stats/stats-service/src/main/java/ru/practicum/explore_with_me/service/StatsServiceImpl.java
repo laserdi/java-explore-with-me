@@ -35,8 +35,10 @@ public class StatsServiceImpl implements StatsService {
         if (application.isEmpty()) {
             Application applicationForSave = new Application(statDto.getApp());
             applicationService.save(applicationForSave);
+            application = Optional.of(applicationForSave);
         }
         Stat stat = statMapper.mapFromSaveToModel(statDto);
+        stat.setApp(application.get());
         statRepository.save(stat);
     }
 
@@ -52,18 +54,22 @@ public class StatsServiceImpl implements StatsService {
     public List<StatsDtoForView> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         List<StatDto> result;
         if (unique) {
-            if (uris.isEmpty()) {
+            if (uris == null || uris.isEmpty()) {
                 //Если нет эндпоинтов, то вывести список всех уникальных эндпоинтов и их посещений
                 // пользователями с уникальными IP-адресами.
+                log.info("Получение статистики: в запросе Эндпоинтов нет, unique = true");
                 result = statRepository.findAllUniqueWhenUriIsEmpty(start, end);
             } else {
                 //Если эндпоинты есть, то поиск по ним.
+                log.info("Получение статистики: в запросе Эндпоинты есть, unique = true");
                 result = statRepository.findAllUniqueWhenUriIsNotEmpty(start, end, uris);
             }
         } else {
-            if (uris.isEmpty()) {
-                result = statRepository.findAllWhenUriIsNotEmpty(start, end);
+            if (uris == null || uris.isEmpty()) {
+                log.info("Получение статистики: в запросе Эндпоинтов нет, unique = false");
+                result = statRepository.findAllWhenUriIsEmpty(start, end);
             } else {
+                log.info("Получение статистики: в запросе Эндпоинты есть, unique = false");
                 result = statRepository.findAllWhenStarEndUris(start, end, uris);
             }
         }

@@ -19,27 +19,31 @@ public interface StatRepository extends JpaRepository<Stat, Long> {
      */
     //@Query("select s from Stat s where s.timestamp > ?1 and s.timestamp < ?2")
     @Query("select new ru.practicum.explore_with_me.dto.StatDto(s.app, s.uri, count (distinct s.ip))" +
-            "from Stat s where s.timestamp > ?1 and s.timestamp < ?2 " +
+            "from Stat s " +
+            "where s.timestamp between ?1 and ?2 " +
             "group by s.app, s.uri " +
-            "order by count (s.ip) desc")
+            "order by count (distinct s.ip) desc")
     List<StatDto> findAllUniqueWhenUriIsEmpty(LocalDateTime start, LocalDateTime end);
 
     @Query("select new ru.practicum.explore_with_me.dto.StatDto(s.app, s.uri, count (distinct s.ip)) "
-            + "from Stat s where s.timestamp > ?1 and s.timestamp < ?2 "
-            + "and s.uri in ?3"
+            + "from Stat s "
+            + "where s.timestamp between ?1 and ?2 "
+            + "and s.uri in (?3)"
             + "group by s.app, s.uri "
-            + "order by count (s.ip) desc ")
+            + "order by count (distinct s.ip) desc ")
     List<StatDto> findAllUniqueWhenUriIsNotEmpty(LocalDateTime start, LocalDateTime end, List<String> uris);
 
     @Query("select new ru.practicum.explore_with_me.dto.StatDto(s.app, s.uri, count(s.ip)) "
-            + "from Stat s where s.timestamp > ?1 and s.timestamp < ?2 "
+            + "from Stat s where s.timestamp between ?1 and ?2 "
             + " group by s.app, s.uri "
             + " order by count(s.ip) desc")
-    List<StatDto> findAllWhenUriIsNotEmpty(LocalDateTime start, LocalDateTime end);
+    List<StatDto> findAllWhenUriIsEmpty(LocalDateTime start, LocalDateTime end);
 
     @Query("select new ru.practicum.explore_with_me.dto.StatDto(s.app, s.uri, count (s.ip))"
-            + "from Stat s where s.timestamp > ?1 and s.timestamp < ?2 and s.uri in ?3"
-            + " group by s.app, s.uri "
+            + "from Stat s "
+            + "where s.timestamp between ?1 and ?2 "
+            + "and s.uri in (?3)"
+            + "group by s.app, s.uri "
             + "order by count (s.ip) desc")
-    List<StatDto> findAllWhenStarEndUris(LocalDateTime start, LocalDateTime end, List<String> urs);
+    List<StatDto> findAllWhenStarEndUris(LocalDateTime start, LocalDateTime end, List<String> uris);
 }

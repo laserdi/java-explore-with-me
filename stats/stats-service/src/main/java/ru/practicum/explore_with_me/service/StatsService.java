@@ -22,4 +22,5 @@ public interface StatsService {
      * @return список статистики.
      */
     List<StatsDtoForView> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique);
+//    Object getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique);
 }

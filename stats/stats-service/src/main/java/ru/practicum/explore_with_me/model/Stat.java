@@ -29,14 +29,14 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @RequiredArgsConstructor
-@AllArgsConstructor
-@Builder(toBuilder = true)
+//@AllArgsConstructor
+//@Builder(toBuilder = true)
 @Entity
 @Table(name = "stats")
 public class Stat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false, unique = true)
+    @Column(name = "id_stats", nullable = false)
     private Long id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "app_id")

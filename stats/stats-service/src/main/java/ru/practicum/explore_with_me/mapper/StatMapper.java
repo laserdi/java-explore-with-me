@@ -10,9 +10,11 @@ import ru.practicum.explore_with_me.model.Stat;
 @Mapper(componentModel = "spring")
 public interface StatMapper {
     @Mapping(source = "app", target = "app.app")
+    @Mapping(source = "timestamp", dateFormat = "yyyy-MM-dd HH:mm:ss", target = "timestamp")
     Stat mapFromSaveToModel(StatsDtoForSave statsDtoForSave);
 
     @Mapping(source = "app.app", target = "app")
+    @Mapping(source = "timestamp", dateFormat = "yyyy-MM-dd HH:mm:ss", target = "timestamp")
     StatsDtoForSave mapToDtoForSave(Stat stat);
 
     @Mapping(source = "app", target = "app.app")

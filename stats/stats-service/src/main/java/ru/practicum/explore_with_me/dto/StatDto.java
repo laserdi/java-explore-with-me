@@ -11,5 +11,5 @@ import ru.practicum.explore_with_me.model.Application;
 public class StatDto {
     private Application app;
     private String uri;
-    private long hits;
+    private Long hits;
 }

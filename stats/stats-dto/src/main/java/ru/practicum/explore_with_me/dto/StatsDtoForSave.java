@@ -1,10 +1,12 @@
 package ru.practicum.explore_with_me.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -33,5 +35,6 @@ public class StatsDtoForSave {
      * Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
      */
     @NotNull(message = "Время сохранения в БД должно быть не null.")
-    private LocalDateTime timestamp;
+    @NotBlank(message = "Время сохранения в БД должно быть не пустым.")
+    private String timestamp;
 }
