@@ -13,13 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class StatsDtoForSave {
     /**
-     * Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
-     */
-
-    @NotBlank(message = "Время сохранения в БД должно быть не пустым.")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime timestamp;
-    /**
      * {
      * "app": "ewm-main-service",
      * "uri": "/events/1",
@@ -34,4 +27,10 @@ public class StatsDtoForSave {
     private String uri;
     @NotBlank(message = "IP-адрес, с которого идёт запрос не должен быть пустым для сохранения в БД.")
     private String ip;
+    /**
+     * Дата и время, когда был совершен запрос к эндпоинту (в формате "yyyy-MM-dd HH:mm:ss")
+     */
+    @NotBlank(message = "Время сохранения в БД должно быть не пустым.")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime timestamp;
 }
