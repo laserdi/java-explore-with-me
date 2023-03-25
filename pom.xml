@@ -19,6 +19,7 @@
 
     <modules>
         <module>stats</module>
+        <module>ewm-service</module>
     </modules>
     <properties>
         <java.version>11</java.version>
