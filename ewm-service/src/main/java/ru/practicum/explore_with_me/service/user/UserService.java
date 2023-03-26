@@ -1,6 +1,6 @@
 package ru.practicum.explore_with_me.service.user;
 
-import ru.practicum.explore_with_me.dto.user.UserShortDto;
+import ru.practicum.explore_with_me.dto.user.UserDto;
 
 import java.util.List;
 
@@ -11,14 +11,14 @@ public interface UserService {
      * @param size
      * @return список пользователей.
      */
-    List<UserShortDto> findByIds(List<Long> ids, int from, int size);
+    List<UserDto> findByIds(List<Long> ids, int from, int size);
 
     /**
      * Сохранить пользователя в БД.
-     * @param userShortDto DTO-объект пользователя.
+     * @param userDto DTO-объект пользователя.
      * @return сохранённый пользователь.
      */
-    UserShortDto save(UserShortDto userShortDto);
+    UserDto save(UserDto userDto);
 
     /**
      * <p>Удаление пользователя.</p>
@@ -28,4 +28,10 @@ public interface UserService {
      */
     void delete(Long userId);
 
+    /**
+     * Проверка наличия пользователя в БД.
+     * @param userId ID пользователя.
+     * @param message сообщение для исключения.
+     */
+    UserDto check(Long userId, String message);
 }

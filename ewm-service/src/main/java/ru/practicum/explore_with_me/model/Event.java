@@ -82,7 +82,8 @@ public class Event {
     private Category category;
 
     /**
-     * Количество одобренных заявок на участие в данном событии.
+     * <p>Количество одобренных заявок на участие в данном событии.</p>
+     * Поле не сохраняем в БД. Оно потом вычисляется.
      */
     @Transient  //Поле не сохраняем в БД. Оно потом вычисляется.
     private Long confirmedRequests;
@@ -92,7 +93,6 @@ public class Event {
      */
     @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn;
-
 
     /**
      * Полное описание события.
@@ -106,6 +106,9 @@ public class Event {
     @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
 
+    /**
+     * Организатор события.
+     */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
@@ -155,7 +158,8 @@ public class Event {
     private String title;
 
     /**
-     * Количество просмотрев события.
+     * <p>Количество просмотрев события.</p>
+     * Поле не сохраняем в БД. Оно потом вычисляется.
      */
     @Transient  //Поле не сохраняем в БД. Оно потом вычисляется.
     private Integer views;

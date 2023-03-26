@@ -5,21 +5,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
+import ru.practicum.explore_with_me.dto.user.UserShortDto;
 
+import javax.persistence.Transient;
 import java.time.LocalDateTime;
 
 /**
- * description:
  * Краткая информация о событии
- * category*	CategoryDto{...}
- * confirmedRequests	integer($int64)
- * example: 5
- *
- *
- * eventDate*	string
- * example: 2024-12-31 15:10:05
- * Дата и время на которые намечено событие (в формате "yyyy-MM-dd HH:mm:ss")
- *
  */
 @Getter
 @Setter
@@ -54,19 +46,24 @@ public class EventShortDto {
      */
     private LocalDateTime eventDate;
     /**
-     * initiator*	UserShortDto{
-     * description:
-     * Пользователь (краткая информация)
-     *
-     * id*	integer($int64)
-     * example: 3
-     * Идентификатор
-     *
-     * name*	string
-     * example: Фёдоров Матвей
-     * Имя
-     *
-     * }
+     * <p>Пользователь (краткая информация).</p>
+     * UserDto{
      */
-//    private
+    private UserShortDto initiator;
+
+    /**
+     * Нужно ли оплачивать участие?
+     */
+    private boolean paid;
+    /**
+     * <p>Описание.</p>
+     * example: Знаменитое шоу 'Летающая кукуруза'.
+     */
+    private String title;
+    /**
+     * Количество просмотрев события.
+     */
+    @Transient  //Поле не сохраняем в БД. Оно потом вычисляется.
+    private Integer views;
+
 }

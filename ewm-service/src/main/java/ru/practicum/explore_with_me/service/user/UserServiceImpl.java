@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore_with_me.dto.user.UserShortDto;
+import ru.practicum.explore_with_me.dto.user.UserDto;
 import ru.practicum.explore_with_me.handler.exceptions.NotFoundRecordInBD;
 import ru.practicum.explore_with_me.mapper.UserMapper;
 import ru.practicum.explore_with_me.model.User;
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
      * @return список пользователей.
      */
     @Override
-    public List<UserShortDto> findByIds(List<Long> ids, int from, int size) {
+    public List<UserDto> findByIds(List<Long> ids, int from, int size) {
         Pageable pageable = PageRequest.of(from, size, Sort.by("name").ascending());
         List<User> users;
         if (ids == null || ids.isEmpty()) {
@@ -52,10 +52,10 @@ public class UserServiceImpl implements UserService {
      * <p>/admin/users</p>
      */
     @Override
-    public UserShortDto save(UserShortDto userShortDto) {
-        User newUser = userMapper.mapToUser(userShortDto);
+    public UserDto save(UserDto userDto) {
+        User newUser = userMapper.mapToUser(userDto);
         User savedUser = userRepository.save(newUser);
-        UserShortDto result = userMapper.mapToUserDto(savedUser);
+        UserDto result = userMapper.mapToUserDto(savedUser);
         log.info("Выполнено сохранение нового пользователя в БД ID = {}, name = {}.", result.getId(), result.getName());
         return result;
     }
@@ -68,11 +68,27 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void delete(Long userId) {
-        User oldUser = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundRecordInBD(
-                        String.format("При удалении из БД пользователь с ID = %d не найден.", userId)));
+        UserDto oldUser = check(userId, "При удалении из БД пользователь с ID = %d не найден.");
         // TODO: 26.03.2023 Проверить отсутствие "хвостов" удаляемого пользователя.
         userRepository.deleteById(userId);
         log.info("Выполнено удаление пользователя с ID = {} и  name = {}", userId, oldUser.getName());
+    }
+
+    /**
+     * Проверка наличия пользователя в БД.
+     * @param userId  ID пользователя.
+     * @param message сообщение для исключения.
+     */
+    @Override
+    public UserDto check(Long userId, String message) {
+        if (message == null || message.isBlank()) {
+            message = "В БД не найден пользователь с ID = %d.";
+        }
+
+        String finalMessage = message;
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundRecordInBD(String.format(finalMessage, userId)));
+
+        return userMapper.mapToUserDto(user);
     }
 }

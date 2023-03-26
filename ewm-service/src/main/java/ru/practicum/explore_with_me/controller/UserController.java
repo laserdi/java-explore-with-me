@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explore_with_me.dto.user.UserShortDto;
+import ru.practicum.explore_with_me.dto.user.UserDto;
 import ru.practicum.explore_with_me.service.user.UserService;
 import ru.practicum.explore_with_me.validation.CreateObject;
 
@@ -30,9 +30,9 @@ public class UserController {
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UserShortDto> findAll(@RequestParam List<Long> ids,
-                                      @Positive @RequestParam(required = false, defaultValue = "0") int from,
-                                      @Positive @RequestParam(required = false, defaultValue = "10") int size) {
+    public List<UserDto> findAll(@RequestParam List<Long> ids,
+                                 @Positive @RequestParam(required = false, defaultValue = "0") int from,
+                                 @Positive @RequestParam(required = false, defaultValue = "10") int size) {
         log.info("GET /admin/users. ids={}, from={}, size={}", ids, from, size);
         return userService.findByIds(ids, from, size);
     }
@@ -44,9 +44,9 @@ public class UserController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserShortDto addUser(@Validated(CreateObject.class) @RequestBody UserShortDto userShortDto) {
-        log.info("Добавление нового пользователя. POST /admin/users Body user = {}", userShortDto);
-        return userService.save(userShortDto);
+    public UserDto addUser(@Validated(CreateObject.class) @RequestBody UserDto userDto) {
+        log.info("Добавление нового пользователя. POST /admin/users Body user = {}", userDto);
+        return userService.save(userDto);
     }
 
     /**
