@@ -1,8 +1,6 @@
 package ru.practicum.explore_with_me.dto.category;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.explore_with_me.validation.CreateObject;
 import ru.practicum.explore_with_me.validation.UpdateObject;
 import ru.practicum.explore_with_me.validation.ViewObject;
@@ -19,6 +17,7 @@ import javax.validation.constraints.PositiveOrZero;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class CategoryDto {
     /**
      * <p>Идентификатор категории.</p>

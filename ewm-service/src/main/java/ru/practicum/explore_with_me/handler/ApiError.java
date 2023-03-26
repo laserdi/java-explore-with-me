@@ -1,25 +1,21 @@
-package ru.practicum.explore_with_me.apierror;
+package ru.practicum.explore_with_me.handler;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * Ошибка.
  */
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ApiError {
-    /**
-     * Список стектрейсов или описания ошибок.
-     */
-    private List<String> errors;
-
     /**
      * <p>Сообщение об ошибке.</p>
      * example: Only pending or canceled events can be changed

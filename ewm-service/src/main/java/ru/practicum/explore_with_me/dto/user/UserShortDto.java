@@ -1,6 +1,10 @@
 package ru.practicum.explore_with_me.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import ru.practicum.explore_with_me.validation.CreateObject;
 import ru.practicum.explore_with_me.validation.ViewObject;
 
@@ -11,6 +15,11 @@ import javax.validation.constraints.PositiveOrZero;
 /**
  * Пользователь (краткая информация).
  */
+
+@Getter
+@Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserShortDto {
     /**
      * <p>Идентификатор.</p>

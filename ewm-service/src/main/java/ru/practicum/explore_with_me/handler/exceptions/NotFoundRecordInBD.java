@@ -1,8 +1,5 @@
-package ru.practicum.explore_with_me.apierror.exceptions;
+package ru.practicum.explore_with_me.handler.exceptions;
 
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
 public class NotFoundRecordInBD extends RuntimeException {
 
     public NotFoundRecordInBD(String message) {

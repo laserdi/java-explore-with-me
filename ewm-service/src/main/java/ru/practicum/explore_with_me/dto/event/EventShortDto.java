@@ -1,5 +1,9 @@
 package ru.practicum.explore_with_me.dto.event;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
 
 import java.time.LocalDateTime;
@@ -17,6 +21,10 @@ import java.time.LocalDateTime;
  * Дата и время на которые намечено событие (в формате "yyyy-MM-dd HH:mm:ss")
  *
  */
+@Getter
+@Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class EventShortDto {
     /**
      * <p>Идентификатор.</p>

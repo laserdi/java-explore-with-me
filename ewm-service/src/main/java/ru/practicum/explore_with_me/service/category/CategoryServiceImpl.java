@@ -1,11 +1,13 @@
 package ru.practicum.explore_with_me.service.category;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore_with_me.apierror.exceptions.NotFoundRecordInBD;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explore_with_me.handler.exceptions.NotFoundRecordInBD;
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
 import ru.practicum.explore_with_me.mapper.CategoryMapper;
 import ru.practicum.explore_with_me.model.Category;
@@ -14,8 +16,10 @@ import ru.practicum.explore_with_me.repository.CategoryRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
@@ -40,8 +44,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getById(Long id) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundRecordInBD(
-                        String.format("В БД не найдена категория с ID = %1$d", id)));
+                .orElseThrow(
+                        () -> new NotFoundRecordInBD(
+                        String.format("В БД не найдена категория с ID = %d", id)));
         return categoryMapper.mapToCategoryDto(category);
     }
 
@@ -51,9 +56,12 @@ public class CategoryServiceImpl implements CategoryService {
      * @return добавленный объект DTO-категории.
      */
     @Override
-    public CategoryDto add(CategoryDto categoryDto) {
+    public CategoryDto save(CategoryDto categoryDto) {
         Category newCategory = categoryMapper.mapToCategory(categoryDto);
-        return categoryMapper.mapToCategoryDto(categoryRepository.save(newCategory));
+        Category savedCategory = categoryRepository.save(newCategory);
+        CategoryDto result = categoryMapper.mapToCategoryDto(savedCategory);
+        log.info("Выполнено сохранение новой категории в БД ID = {}, name = {}.", result.getId(), result.getName());
+        return result;
     }
 
     /**
@@ -62,11 +70,30 @@ public class CategoryServiceImpl implements CategoryService {
      * @return изменённая категория.
      */
     @Override
-    public CategoryDto update(CategoryDto categoryDto) {
-        categoryRepository.findById(categoryDto.getId()).orElseThrow(() -> new NotFoundRecordInBD(
-                String.format("При обновлении категории в БД не найдена категория с ID = %1$s", categoryDto))
+    public CategoryDto update(Long id, CategoryDto categoryDto) {
+        categoryRepository.findById(id).orElseThrow(() -> new NotFoundRecordInBD(
+                String.format("При обновлении категории в БД не найдена категория с ID = %d", id))
         );
         Category newCategory = categoryMapper.mapToCategory(categoryDto);
-        return categoryMapper.mapToCategoryDto(categoryRepository.save(newCategory));
+        newCategory.setId(id);
+        CategoryDto updatedCategory = categoryMapper.mapToCategoryDto(categoryRepository.save(newCategory));
+        log.info("Выполнено сохранение новой категории в БД ID = {}, name = {}.",
+                updatedCategory.getId(), updatedCategory.getName());
+        return updatedCategory;
+    }
+
+    /**
+     * Удалить категорию по ID.
+     * @param catId ID удаляемой категории.
+     */
+    @Override
+    public void delete(Long catId) {
+        Category oldCategory = categoryRepository.findById(catId).orElseThrow(
+                () -> new NotFoundRecordInBD(String.format(
+                        "При удалении категории в БД не найдена категория с ID = %d", catId)));
+        // TODO: 26.03.2023 Добавить проверку отсутствия событий в данной категории.
+        categoryRepository.deleteById(catId);
+        log.info("Выполнено удаление из БД категории с ID = {}, name = {}.", catId, oldCategory.getName());
+//        return categoryMapper.mapToCategoryDto(oldCategory);
     }
 }

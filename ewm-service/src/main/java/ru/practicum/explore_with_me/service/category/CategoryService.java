@@ -9,6 +9,8 @@ public interface CategoryService {
 
     /**
      * Получить список всех категорий.
+     * @param from количество категорий, которые нужно пропустить для формирования текущего набора.
+     * @param size количество категорий в наборе.
      * @return список категорий.
      */
     List<CategoryDto> getAll(int from, int size);
@@ -25,11 +27,18 @@ public interface CategoryService {
      * @param categoryDto DTO-категория.
      * @return добавленный объект DTO-категории.
      */
-    CategoryDto add(CategoryDto categoryDto);
+    CategoryDto save(CategoryDto categoryDto);
 
     /**
      * Обновить категорию в БД.
      * @return изменённая категория.
      */
-    CategoryDto update(CategoryDto categoryDto);
+    CategoryDto update(Long id, CategoryDto categoryDto);
+
+    /**
+     * Удалить категорию по ID.
+     * @param catId ID удаляемой категории.
+     * @return удалённая категория.
+     */
+    void delete(Long catId);
 }
