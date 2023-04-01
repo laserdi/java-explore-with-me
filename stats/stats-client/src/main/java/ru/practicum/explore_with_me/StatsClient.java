@@ -24,14 +24,28 @@ public class StatsClient {
      * Он позволяет с легкостью вызывать конечные точки REST в одной строке. Он раскрывает следующие группы
      * <a href="https://javarush.com/quests/lectures/questspring.level06.lecture00">перегруженных методов.</a>
      */
-    private final RestTemplate restTemplate;
+    private RestTemplate restTemplate;
     /**
      * <p>Источник здесь.</p>
      * <a href="https://for-each.dev/lessons/b/-spring-value-annotation">...</a>
      */
     @Value("${statsServerUrl}")
     private String statsServer;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    /**
+     * <p>Получение из БД информации об обращениях к ресурсу.</p>
+     * {{baseUrl}}/stats?start=2020-05-05 00:00:00&end=2035-05-05 00:00:00&uris={{uri}}
+     * <p>Помните, что URI-шаблоны автоматически кодируются, как показано в следующем примере:</p>
+     * <p>restTemplate.getForObject("https://example.com/hotel list", String.class);</p>
+     * Результат запроса по "https://example.com/hotel%20list"
+     * @param uris
+     * @return список посещений для разных эндпоинтов.
+     */
+    public ResponseEntity<List<StatsDtoForView>> getStats(List<String> uris) {
+        return getStats(LocalDateTime.of(1980,1,1,0,0,0),
+                LocalDateTime.now(), uris, false);
+    }
 
     /**
      * <p>Получение из БД информации об обращениях к ресурсу.</p>
@@ -42,18 +56,18 @@ public class StatsClient {
      * @return список посещений для разных эндпоинтов.
      */
     public ResponseEntity<List<StatsDtoForView>> getStats(LocalDateTime start, LocalDateTime end,
-                                                          String[] uris, boolean unique) {
+                                                          List<String> uris, boolean unique) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
         StringBuilder urisForExchange = new StringBuilder();
-        for (int i = 0; i < uris.length; i++) {
-            if (i < (uris.length - 1)) {
+        for (int i = 0; i < uris.size(); i++) {
+            if (i < (uris.size() - 1)) {
                 //Если не последний эндпоинт...
-                urisForExchange.append("uris").append("=").append(uris[i]).append(",");
+                urisForExchange.append("uris").append("=").append(uris.get(i)).append(",");
             } else {
                 //Иначе...
-                urisForExchange.append("uris").append("=").append(uris[i]);
+                urisForExchange.append("uris").append("=").append(uris.get(i));
             }
         }
         Map<String, Object> uriVariables = Map.of(

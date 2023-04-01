@@ -1,8 +1,26 @@
 package ru.practicum.explore_with_me.model;
 
+import lombok.Getter;
+
+/**
+ * Статус заявки на участие в событии.
+ */
+@Getter
 public enum StatusRequest {
-    CONFIRMED,  //подтверждено.
-    PENDING,    //в ожидании
-    PUBLISHED,  //опубликовано
-    CANCELED    //отменено
+    /**
+     * подтверждено
+     */
+    CONFIRMED,
+    /**
+     * в ожидании
+     */
+    PENDING,
+    /**
+     * опубликовано
+     */
+    PUBLISHED,
+    /**
+     * отменено
+     */
+    CANCELED
 }

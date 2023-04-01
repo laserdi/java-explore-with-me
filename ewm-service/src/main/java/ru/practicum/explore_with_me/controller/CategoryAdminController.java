@@ -13,6 +13,7 @@ import ru.practicum.explore_with_me.validation.UpdateObject;
 import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
+//@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin/categories")

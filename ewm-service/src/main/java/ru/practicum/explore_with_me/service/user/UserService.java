@@ -1,6 +1,7 @@
 package ru.practicum.explore_with_me.service.user;
 
 import ru.practicum.explore_with_me.dto.user.UserDto;
+import ru.practicum.explore_with_me.model.User;
 
 import java.util.List;
 
@@ -30,8 +31,17 @@ public interface UserService {
 
     /**
      * Проверка наличия пользователя в БД.
-     * @param userId ID пользователя.
+     * @param userId  ID пользователя.
      * @param message сообщение для исключения.
+     * @return DTO найденного пользователя.
      */
     UserDto check(Long userId, String message);
+
+    /**
+     * Получение пользователя из БД.
+     * @param userId  ID пользователя.
+     * @param message сообщение для исключения, которое должно содержать поле с ID.
+     * @return найденный пользователь.
+     */
+    User getUserOrThrow(Long userId, String message);
 }

@@ -28,7 +28,6 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cat_id", nullable = false)
     private Long id;
-
     /**
      * Имя категории.
      */

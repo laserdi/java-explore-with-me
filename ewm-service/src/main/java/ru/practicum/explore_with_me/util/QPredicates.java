@@ -14,6 +14,18 @@ public class QPredicates {
 
     /**
      * Для объединения предикатов.
+     * @param predicate предикат, может быть игнорировать регистр и т.п.
+     * @return возвращает себя же.
+     */
+    public <T> QPredicates add(Predicate predicate) {
+        if (predicate != null) {
+            predicates.add(predicate);
+        }
+        return this;
+    }
+
+    /**
+     * Для объединения предикатов.
      * @param object объект или поле, по которому будет идти выборка. Может быть любого типа.
      * @param function функция, может быть игнорировать регистр и т.п.
      * @return возвращает себя же.

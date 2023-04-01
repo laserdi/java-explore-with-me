@@ -12,53 +12,6 @@ import java.time.LocalDateTime;
  * description:
  * Данные для изменения информации о событии. Если поле в запросе не указано (равно null) - значит изменение этих
  * данных не требуется.
- * <p>
- * annotation	string
- * maxLength: 2000
- * minLength: 20
- * example: Сап прогулки по рекам и каналам – это возможность увидеть Практикбург с другого ракурса
- * Новая аннотация
- * <p>
- * category	integer($int64)
- * example: 3
- * Новая категория
- * <p>
- * description	string
- * maxLength: 7000
- * minLength: 20
- * example: От английского SUP - Stand Up Paddle — "стоя на доске с веслом", гавайская разновидность сёрфинга,
- * в котором серфер, стоя на доске, катается на волнах и при этом гребет веслом, а не руками, как в классическом
- * серфинге.
- * Новое описание
- * <p>
- * eventDate	string
- * example: 2023-10-11 23:10:05
- * Новые дата и время на которые намечено событие. Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
- * <p>
- * location	Location{...}
- * paid	boolean
- * example: true
- * Новое значение флага о платности мероприятия
- * <p>
- * participantLimit	integer($int32)
- * example: 7
- * Новый лимит пользователей
- * <p>
- * requestModeration	boolean
- * example: false
- * Нужна ли пре-модерация заявок на участие
- * <p>
- * stateAction	string
- * example: CANCEL_REVIEW
- * Изменение сотояния события
- * <p>
- * Enum:
- * Array [ 2 ]
- * title	string
- * maxLength: 120
- * minLength: 3
- * example: Сап прогулки по рекам и каналам
- * Новый заголовок
  */
 @Getter
 @Setter
@@ -80,13 +33,6 @@ public class Event {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cat_id")
     private Category category;
-
-    /**
-     * <p>Количество одобренных заявок на участие в данном событии.</p>
-     * Поле не сохраняем в БД. Оно потом вычисляется.
-     */
-    @Transient  //Поле не сохраняем в БД. Оно потом вычисляется.
-    private Long confirmedRequests;
 
     /**
      * Дата и время создания события (в формате "yyyy-MM-dd HH:mm:ss").
@@ -156,6 +102,13 @@ public class Event {
      */
     @Column(name = "title", nullable = false)
     private String title;
+
+    /**
+     * <p>Количество одобренных заявок на участие в данном событии.</p>
+     * Поле не сохраняем в БД. Оно потом вычисляется.
+     */
+    @Transient  //Поле не сохраняем в БД. Оно потом вычисляется.
+    private Integer confirmedRequests;
 
     /**
      * <p>Количество просмотрев события.</p>

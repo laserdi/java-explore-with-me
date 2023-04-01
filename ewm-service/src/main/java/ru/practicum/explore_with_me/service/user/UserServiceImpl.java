@@ -75,9 +75,27 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Проверка наличия пользователя в БД.
+     * Получение пользователя из БД.
      * @param userId  ID пользователя.
-     * @param message сообщение для исключения.
+     * @param message сообщение для исключения, которое должно содержать поле с ID.
+     * @return найденный пользователь.
+     */
+    @Override
+    public User getUserOrThrow(Long userId, String message) {
+        if (message == null || message.isBlank()) {
+            message = "В БД не найден пользователь с ID = %d.";
+        }
+        String finalMessage = message;
+
+        return userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundRecordInBD(String.format(finalMessage, userId)));
+    }
+
+    /**
+     * Получение DTO-пользователя из БД.
+     * @param userId  ID пользователя.
+     * @param message сообщение для исключения, которое должно содержать поле с ID.
+     * @return DTO найденного пользователя.
      */
     @Override
     public UserDto check(Long userId, String message) {

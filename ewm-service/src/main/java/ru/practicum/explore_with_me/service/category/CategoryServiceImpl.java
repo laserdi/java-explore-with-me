@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore_with_me.handler.exceptions.NotFoundRecordInBD;
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
+import ru.practicum.explore_with_me.handler.exceptions.NotFoundRecordInBD;
 import ru.practicum.explore_with_me.mapper.CategoryMapper;
 import ru.practicum.explore_with_me.model.Category;
 import ru.practicum.explore_with_me.repository.CategoryRepository;
@@ -46,7 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(
                         () -> new NotFoundRecordInBD(
-                        String.format("В БД не найдена категория с ID = %d", id)));
+                                String.format("В БД не найдена категория с ID = %d", id)));
         return categoryMapper.mapToCategoryDto(category);
     }
 
@@ -96,4 +96,23 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Выполнено удаление из БД категории с ID = {}, name = {}.", catId, oldCategory.getName());
 //        return categoryMapper.mapToCategoryDto(oldCategory);
     }
+
+    /**
+     * <p>Получение категории из БД по ID.</p>
+     * @param catId ID категории.
+     * @param message сообщение для исключения, которое должно содержать поле с ID.
+     * @return найденная категория.
+     */
+    @Override
+    public Category getCatOrThrow(Long catId, String message) {
+        if (message == null || message.isBlank()) {
+            message = "В БД не найдена категория с ID = %d.";
+        }
+        String finalMessage = message;
+
+        return categoryRepository.findById(catId).orElseThrow(
+                () -> new NotFoundRecordInBD(String.format(finalMessage, catId)));
+    }
+
+
 }

@@ -21,5 +21,5 @@ public class StatsDtoForView {
     /**
      * Количество просмотров.
      */
-    private Long hits;
+    private Integer hits;
 }

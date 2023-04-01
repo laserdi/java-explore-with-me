@@ -1,6 +1,7 @@
 package ru.practicum.explore_with_me.service.category;
 
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
+import ru.practicum.explore_with_me.model.Category;
 
 import java.util.List;
 
@@ -41,4 +42,12 @@ public interface CategoryService {
      * @return удалённая категория.
      */
     void delete(Long catId);
+
+    /**
+     * <p>Получение категории из БД по ID.</p>
+     * @param catId ID категории.
+     * @param message сообщение об ошибке.
+     * @return найденная категория.
+     */
+    Category getCatOrThrow(Long catId,String message);
 }

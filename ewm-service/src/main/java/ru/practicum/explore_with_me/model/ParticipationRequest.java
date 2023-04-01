@@ -8,13 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * Заявка на участие в событии
- * id	integer($int64)
- * example: 3
- * Идентификатор заявки
- * status	string
- * example: PENDING
- * Статус заявки
+ * Заявка на участие в событии.
  */
 @Getter
 @Setter
@@ -27,7 +21,7 @@ public class ParticipationRequest {
     @Column(name = "req_id")
     Long id;
     /**
-     * <p>Дата и время создания заявки</p>
+     * <p>Дата и время создания заявки.</p>
      * <p>created	string</p>
      * example: 2022-09-06T21:10:05.432
      */
