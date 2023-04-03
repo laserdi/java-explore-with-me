@@ -1,6 +1,7 @@
 package ru.practicum.explore_with_me.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -27,7 +28,7 @@ public class Event {
     /**
      * Краткое описание.
      */
-    @Column(name = "annotation")
+    @Column(name = "annotation", length = 2000)
     private String annotation;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,13 +44,14 @@ public class Event {
     /**
      * Полное описание события.
      */
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, length = 7000)
     private String description;
 
     /**
      * Дата и время, на которые намечено событие (в формате "yyyy-MM-dd HH:mm:ss").
      */
-    @Column(name = "event_date", nullable = false)
+    @Column(name = "event_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
     /**
@@ -80,7 +82,8 @@ public class Event {
     /**
      * Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss").
      */
-    @Column(name = "published_on", nullable = false)
+    @Column(name = "published_on")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
 
     /**

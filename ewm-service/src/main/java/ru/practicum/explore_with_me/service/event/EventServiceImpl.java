@@ -5,6 +5,7 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,9 +16,13 @@ import ru.practicum.explore_with_me.dto.StatsDtoForView;
 import ru.practicum.explore_with_me.dto.event.EventFullDto;
 import ru.practicum.explore_with_me.dto.event.EventShortDto;
 import ru.practicum.explore_with_me.dto.event.NewEventDto;
+import ru.practicum.explore_with_me.dto.event.UpdateEventAdminRequest;
 import ru.practicum.explore_with_me.dto.filter.EventFilter;
 import ru.practicum.explore_with_me.dto.user.UserDto;
+import ru.practicum.explore_with_me.handler.exceptions.InvalidDateTimeException;
 import ru.practicum.explore_with_me.handler.exceptions.NotFoundRecordInBD;
+import ru.practicum.explore_with_me.handler.exceptions.OperationFailedException;
+import ru.practicum.explore_with_me.mapper.CategoryMapper;
 import ru.practicum.explore_with_me.mapper.EventMapper;
 import ru.practicum.explore_with_me.model.*;
 import ru.practicum.explore_with_me.repository.EventRepository;
@@ -27,17 +32,18 @@ import ru.practicum.explore_with_me.util.QPredicates;
 import ru.practicum.explore_with_me.util.UtilService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+//import static generated.ru.practicum.explore_with_me.model.QEvent.event;
 import static ru.practicum.explore_with_me.model.QEvent.event;
 
 @Slf4j
 @Service
 //@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequiredArgsConstructor
+@Import({StatsClient.class})
 public class EventServiceImpl implements EventService {
 
     private final EventMapper eventMapper;
@@ -46,7 +52,8 @@ public class EventServiceImpl implements EventService {
     private final CategoryService categoryService;
     private final StatsClient statsClient;
     private final UtilService utilService;
-//    private final ParticipationRequestService participationRequestService;
+    private final CategoryMapper categoryMapper;
+    //    private final ParticipationRequestService participationRequestService;
 
     /**
      * Поиск событий с помощью фильтра.
@@ -90,14 +97,19 @@ public class EventServiceImpl implements EventService {
                 "При создании события не найден пользователь ID = {}.");
         Category category = categoryService.getCatOrThrow(newEventDto.getCategoryId(),
                 "При создании события не найдена категория с ID = {}.");
+
+        checkDateEvent(newEventDto.getEventDate(), 2);
+
         Event newEvent = eventMapper.mapFromNewToModel(newEventDto);
         newEvent.setInitiator(initiator);
+        newEvent.setCategory(category);
         newEvent.setEventState(EventState.PENDING);
         newEvent.setCreatedOn(LocalDateTime.now());
         Event savedEvent = eventRepository.save(newEvent);
-
-        log.info("Создано событие в БД с кратким описанием: {}.", savedEvent.getAnnotation());
-        return eventMapper.mapFromModelToFullDtoWhenCreate(savedEvent, 0, 0);
+        EventFullDto result = eventMapper.mapFromModelToFullDtoWhenCreate(savedEvent, 0, 0);
+        log.info("Создано событие в БД с ID = {} и кратким описанием: {}.", savedEvent.getId(),
+                savedEvent.getAnnotation());
+        return result;
     }
 
     /**
@@ -149,8 +161,7 @@ public class EventServiceImpl implements EventService {
 
         //Надо заполнить просмотры и количество подтв. запросов.
         //Получаем список просмотров от сервера статистики.
-        List<StatsDtoForView> stats = new ArrayList<>();
-        stats = utilService.getViews(events);
+        List<StatsDtoForView> stats = utilService.getViews(events);
         //Заполняем поля просмотров.
 //        List<Event> result = new ArrayList<>();
 //        result = utilService.fillViews(events, stats);
@@ -163,7 +174,7 @@ public class EventServiceImpl implements EventService {
 
         //Отправляем на конвертацию.
         List<EventFullDto> list = eventMapper.mapFromModelListToFullDtoList(events);
-        log.info("Администратору отправлен список событий.");
+        log.info("Администратору отправлен список событий из {} событий.", list.size());
         return list;
     }
 
@@ -248,6 +259,44 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
+     * Обновить событие от имени админа.
+     * <p>событие должно быть опубликовано</p>
+     * <p>информация о событии должна включать в себя количество просмотров и количество подтвержденных запросов</p>
+     * <p>информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики</p>
+     * <p>В случае, если события с заданным id не найдено, возвращает статус код 404</p>
+     * @param eventId                 ID события.
+     * @param updateEventAdminRequest объект события для обновления.
+     * @return обновлённое событие.
+     */
+    @Override
+    public EventFullDto updateEventAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
+        Event event = getEventOrThrow(eventId, "При обновлении события админом " +
+                "не найдено событие в БД с ID = %d.");
+        //Проверяем статус события.
+        checkStateAction(event, updateEventAdminRequest);
+
+        event = updateEventsFields(event, updateEventAdminRequest);        //Обновим поля события.
+
+        event = eventRepository.save(event);
+        //Надо заполнить просмотры и количество подтв. запросов.
+        //Получаем список просмотров от сервера статистики.
+        List<Event> events = List.of(event);
+        List<StatsDtoForView> stats = utilService.getViews(events);
+        //Заполняем поля просмотров.
+//        List<Event> result = new ArrayList<>();
+//        result = utilService.fillViews(events, stats);
+        events = utilService.fillViews(events, stats);
+
+        //Получаем список подтверждённых заявок для каждого события.
+        Map<Event, List<ParticipationRequest>> confirmedRequests = utilService.prepareConfirmedRequest(events);
+        //Заполняем количество просмотров для списка событий.
+        events = utilService.fillConfirmedRequests(events, confirmedRequests);
+        Event result = events.get(0);
+        log.info("Выполнено обновление события с ID = {}.", eventId);
+        return eventMapper.mapFromModelToFullDto(result);
+    }
+
+    /**
      * Проверка наличия события в БД.
      * @param eventId ID события.
      * @param message сообщение для исключения, которое должно содержать поле с ID или быть пустым.
@@ -262,4 +311,93 @@ public class EventServiceImpl implements EventService {
                 () -> new NotFoundRecordInBD(String.format(finalMessage, eventId)));
     }
 
+    /**
+     * Проверить статус события перед его обновлением.
+     * @param oldEvent событие.
+     * @param newEvent обновляющий объект.
+     */
+    private void checkStateAction(Event oldEvent, UpdateEventAdminRequest newEvent) {
+//        if (newEvent.getStateAction() == null) return;
+
+        if (newEvent.getStateAction() == StateAction.PUBLISH_EVENT) {
+            if (oldEvent.getEventState() != EventState.PENDING) {
+                throw new OperationFailedException("Невозможно опубликовать событие, поскольку его можно " +
+                        "публиковать, только если оно в состоянии ожидания публикации.");
+            }
+        }
+        if (newEvent.getStateAction() == StateAction.REJECT_EVENT) {
+            if (oldEvent.getEventState() == EventState.PUBLISHED) {
+                throw new OperationFailedException("Событие не опубликовано.");
+            }
+        }
+        if (oldEvent.getEventState().equals(EventState.CANCELED)
+                && newEvent.getStateAction().equals(StateAction.PUBLISH_EVENT)) {
+            throw new OperationFailedException("Публикация отменённого события невозможна.");
+        }
+    }
+
+
+    /**
+     * Проверка даты и времени начала события.
+     * @param newEventDateTime дата начала события, которую надо проверить.
+     * @param plusHours        через сколько часов от текущего момента может быть начало события?
+     */
+    private void checkDateEvent(LocalDateTime newEventDateTime, int plusHours) {
+
+        LocalDateTime now = LocalDateTime.now().plusHours(plusHours);
+        if (now.isAfter(newEventDateTime)) {
+            throw new InvalidDateTimeException(String.format("Error 400. Field: eventDate. Error: Дата начала" +
+                    " события, должна быть позже текущего момента на %s ч.", plusHours));
+        }
+    }
+
+    /**
+     * Метод обновления полей события события.
+     * @param oldEvent    обновляемое событие.
+     * @param updateEvent событие с изменёнными полями.
+     * @return
+     */
+    private Event updateEventsFields(Event oldEvent, UpdateEventAdminRequest updateEvent) {
+        if (updateEvent.getAnnotation() != null && !updateEvent.getAnnotation().isBlank()) {
+            oldEvent.setAnnotation(updateEvent.getAnnotation());
+        }
+        if (updateEvent.getCategory() != null) {
+            oldEvent.getCategory().setId(updateEvent.getCategory().getId());
+        }
+        if (updateEvent.getDescription() != null && !updateEvent.getDescription().isBlank()) {
+            oldEvent.setDescription(updateEvent.getDescription());
+        }
+        if (updateEvent.getEventDate() != null) {
+            //Проверяем соответствие новой даты требованию, чтобы до начала события было более одного часа.
+            checkDateEvent(updateEvent.getEventDate(), 1);
+            oldEvent.setEventDate(updateEvent.getEventDate());
+        }
+        if (updateEvent.getLocation() != null) {
+            oldEvent.setLocation(updateEvent.getLocation());
+        }
+        if (updateEvent.getPaid() != null) {
+            oldEvent.setPaid(updateEvent.getPaid());
+        }
+        if (updateEvent.getParticipantLimit() != null) {
+            oldEvent.setParticipantLimit(updateEvent.getParticipantLimit());
+        }
+        if (updateEvent.getRequestModeration() != null) {
+            oldEvent.setRequestModeration(updateEvent.getRequestModeration());
+        }
+        if (StateAction.CANCEL_REVIEW.equals(updateEvent.getStateAction()) ||
+                StateAction.REJECT_EVENT.equals(updateEvent.getStateAction())) {
+            oldEvent.setEventState(EventState.CANCELED);
+        }
+        if (StateAction.SEND_TO_REVIEW.equals(updateEvent.getStateAction())) {
+            oldEvent.setEventState(EventState.PENDING);
+        }
+        if (StateAction.PUBLISH_EVENT.equals(updateEvent.getStateAction())) {
+            oldEvent.setEventState(EventState.PUBLISHED);
+            oldEvent.setPublishedOn(LocalDateTime.now());
+        }
+        if (updateEvent.getTitle() != null && !updateEvent.getTitle().isBlank()) {
+            oldEvent.setTitle(updateEvent.getTitle());
+        }
+        return oldEvent;
+    }
 }

@@ -37,7 +37,7 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
      * @return список пождтверждённых заявок в каждом событии.
      * @statusRequest статус заявки = подтверждён.
      */
-    @Query("select p from ParticipationRequest p where p.statusRequest = 'CONFIRMED' and p.event.id in ?2")
+    @Query("select p from ParticipationRequest p where p.statusRequest = 'CONFIRMED' and p.event.id in ?1")
     List<ParticipationRequest> findConfirmedRequests(List<Long> ids);
 
 //    @Query("select new ru.practicum.explore_with_me.dto.request.ParticipationRequestDto(count(r.id), r.event.id) " +

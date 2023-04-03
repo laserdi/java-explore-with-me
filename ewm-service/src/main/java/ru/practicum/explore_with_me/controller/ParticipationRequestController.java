@@ -47,17 +47,19 @@ public class ParticipationRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto addRequest(@PathVariable Long userId,
                                               @RequestParam Long eventId) {
-        log.info("POST  /users/{userId}/requests userId {}, eventId {}", userId, eventId);
+        log.info("Добавление запроса от текущего пользователя на участие в событии.\t\tPOST  /users/{userId}/requess userId {}, eventId {}", userId, eventId);
         return participationRequestService.create(userId, eventId);
     }
 
     /**
+     * <p>Отмена своего запроса на участие в событии</p>
      * PATCH /users/{userId}/requests/{requestId}/cancel
-     * <p>Отмена своего запроса на участие в событии.</p>
      */
     @PatchMapping("/{requestId}/cancel")
     public ParticipationRequestDto cancelRequest(@PathVariable("userId") @Positive long userId,
                                                  @PathVariable(name = "requestId") @Positive long requestId) {
+        log.info("PATCH /users/{userId}/requests/{requestId}/cancel\t\tОтмена своего запроса с ID = {} на участие в событии " +
+                "пользователя с ID = {}.", requestId, userId);
         return participationRequestService.cancelRequest(userId, requestId);
     }
 

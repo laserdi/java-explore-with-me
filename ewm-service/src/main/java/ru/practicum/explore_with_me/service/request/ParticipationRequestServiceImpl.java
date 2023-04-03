@@ -37,7 +37,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     @Override
     public List<ParticipationRequestDto> getRequestsByUserId(Long userId) {
         User userFromDb = userService.getUserOrThrow(userId, "При получении информации о заявках на " +
-                "участие в событиях не найден пользователь ID = {}.");
+                "участие в событиях не найден пользователь ID = %d.");
         return participationRequestRepository.findAllByRequesterIdOrderByIdAsc(userId).stream()
                 .map(requestMapper::mapToDto).collect(Collectors.toList());
     }
@@ -58,18 +58,18 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     @Override
     public ParticipationRequestDto create(Long userId, Long eventId) {
         User userFromDb = userService.getUserOrThrow(userId, "При создании заявки на участие в событии " +
-                "не найден пользователь ID = {}.");
+                "не найден пользователь ID = %d.");
         Event eventFromDb = eventService.getEventOrThrow(eventId, "При создании заявки на участие " +
-                "в событии не найдено событие ID = {}.");
+                "в событии не найдено событие ID = %d.");
         //Определяем количество подтверждённых запросов на участие в событии.
         List<ParticipationRequest> confirmedRequests =
                 participationRequestRepository.findConfirmedRequests(eventId);
 
         if (userId == eventFromDb.getInitiator().getId()) {
-            throw new OperationFailedException("Инициатор события не может создать запрос на участие " +
-                    "в своём событии.");
+            throw new OperationFailedException(String.format("Инициатор с ID = %d события не может создать " +
+                    "запрос на участие в своём событии с ID = %d.", userId, eventId));
         }
-        if (eventFromDb.getEventState() != EventState.PENDING) {
+        if (eventFromDb.getEventState() != EventState.PUBLISHED) {
             throw new OperationFailedException(
                     "Нельзя участвовать в неопубликованном событии."
             );
@@ -87,6 +87,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
         ParticipationRequest participationRequest = new ParticipationRequest();
         participationRequest.setRequester(userFromDb);
+
         if (eventFromDb.getRequestModeration() && eventFromDb.getParticipantLimit() != 0) {
             //Если требуется модерация и есть ограничение на количество участников...
             participationRequest.setStatusRequest(StatusRequest.PENDING);
@@ -94,8 +95,11 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             participationRequest.setStatusRequest(StatusRequest.CONFIRMED);
         }
 
+        participationRequest.setEvent(eventFromDb);
         participationRequest.setCreated(LocalDateTime.now());
-        return requestMapper.mapToDto(participationRequestRepository.save(participationRequest));
+        participationRequest = participationRequestRepository.save(participationRequest);
+        log.info("Сохранена заявка на участие в событии с ID = {} пользователя с ID = {}.", eventId, userId);
+        return requestMapper.mapToDto(participationRequest);
     }
 
     /**
@@ -107,9 +111,9 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
     @Override
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         userService.check(userId, "При отмене заявки на участие в событии " +
-                "не найден пользователь ID = {}.");
+                "не найден пользователь ID = %d.");
         Event eventFromDb = eventService.getEventOrThrow(requestId, "При отмене заявки на участие " +
-                "в событии не найдено событие ID = {}.");
+                "в событии не найдено событие ID = %d.");
         ParticipationRequest participationRequest = participationRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundRecordInBD(String.format("При отмене заявки на участие " +
                         "в событии не найдена заявка ID = %d.", requestId)));

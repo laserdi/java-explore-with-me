@@ -12,19 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class EventFilter {
-/*    private List<Long> ids;
-    private LocalDateTime createdOn;
-    private String name;
-    private LocalDateTime eventDate;
-    private List<Long> initiators;
-    private Location location;
-    private Boolean paid;
-    private Integer participantLimit;
-    private LocalDateTime publishedOn;
-    private Boolean requestModeration;
-    private List<EventState> eventStates;
-    private String title;
-    private Integer views;*/
     /**
      * список id пользователей, чьи события нужно найти.
      */

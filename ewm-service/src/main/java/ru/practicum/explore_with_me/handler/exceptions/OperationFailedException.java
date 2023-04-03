@@ -1,7 +1,7 @@
 package ru.practicum.explore_with_me.handler.exceptions;
 
 /**
- * Ошибка операции из-за данных и т.п.
+ * Ошибка 409. Ошибка операции из-за данных и т.п.
  */
 public class OperationFailedException extends RuntimeException {
     public OperationFailedException(String message) {

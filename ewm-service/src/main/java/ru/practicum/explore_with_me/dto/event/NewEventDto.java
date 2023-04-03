@@ -1,5 +1,6 @@
 package ru.practicum.explore_with_me.dto.event;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,7 @@ public class NewEventDto {
      * Краткое описание.
      */
     @NotBlank(groups = CreateObject.class)
-    @Size(min = 20, max = 2000, message = "Для описания требуется от 20 до 2000 символов.")
+    @Size(min = 20, max = 2000, message = "Для описания требуется от 20 до 2000 символов.", groups = CreateObject.class)
     private String annotation;
 
     /**
@@ -34,7 +35,7 @@ public class NewEventDto {
      * Полное описание события.
      */
     @NotBlank(groups = CreateObject.class)
-    @Size(min = 20, max = 7000, message = "Для описания требуется от 20 до 7000 символов.")
+    @Size(min = 20, max = 7000, message = "Для описания требуется от 20 до 7000 символов.", groups = CreateObject.class)
     private String description;
 
     /**
@@ -42,6 +43,7 @@ public class NewEventDto {
      * <p>Обратите внимание: дата и время на которые намечено событие не может быть раньше,
      * чем через два часа от текущего момента</p>
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
     /**
@@ -69,6 +71,7 @@ public class NewEventDto {
     /**
      * Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss").
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
 
     /**

@@ -6,9 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.event.EventFullDto;
+import ru.practicum.explore_with_me.dto.event.UpdateEventAdminRequest;
 import ru.practicum.explore_with_me.model.EventState;
 import ru.practicum.explore_with_me.service.event.EventService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -37,4 +39,14 @@ public class EventAdminController {
         return eventService.getEventsForAdmin(users, states, categories,
                 rangeStart, rangeEnd, from, size);
     }
+
+    @PatchMapping("/{eventId}")
+    @ResponseStatus(HttpStatus.OK)
+    public EventFullDto update(@Positive @PathVariable Long eventId,
+                                   @Valid @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
+        log.info("Обновление события администратором.\t\tPATCH /admin/events event id{}, {}", eventId,
+                updateEventAdminRequest);
+        return eventService.updateEventAdmin(eventId, updateEventAdminRequest);
+    }
+
 }

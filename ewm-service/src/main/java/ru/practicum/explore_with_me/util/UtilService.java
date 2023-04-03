@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.StatsClient;
 import ru.practicum.explore_with_me.dto.StatsDtoForView;
-import ru.practicum.explore_with_me.dto.event.EventFullDto;
 import ru.practicum.explore_with_me.handler.exceptions.StatsException;
 import ru.practicum.explore_with_me.mapper.EventMapper;
 import ru.practicum.explore_with_me.model.Event;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -68,7 +66,7 @@ public class UtilService {
      */
     public List<Event> fillViews(List<Event> events, List<StatsDtoForView> stats) {
         //Если статистика есть, то заполняем поля.
-        List<EventFullDto> result = new ArrayList<>();
+        List<Event> result = new ArrayList<>();
         if (stats != null && !stats.isEmpty()) {
             for (Event ev : events) {
 
@@ -76,12 +74,18 @@ public class UtilService {
                     String[] statsFields = statsDtoForView.getUri().split("/");
                     if (Integer.parseInt(statsFields[2]) == ev.getId()) {
                         ev.setViews(statsDtoForView.getHits());
+                        result.add(ev);
                     }
                 }
             }
+        } else {
+            for (Event event : events) {
+                event.setViews(0);
+                result.add(event);
+            }
         }
 
-        return events;
+        return result;
     }
 
     /**
@@ -91,9 +95,12 @@ public class UtilService {
      */
     public Map<Event, List<ParticipationRequest>> prepareConfirmedRequest(List<Event> events) {
         //Получаем список подтверждённых запросов для всех событий.
-        List<ParticipationRequest> confirmedRequests = requestRepository.findConfirmedRequests(
-                events.stream().map(Event::getId).collect(Collectors.toList())
-        );
+        log.info("Получаем список подтверждённых запросов для всех событий.");
+        List<Long> list1 = new ArrayList<>();
+        for (Event event1 : events) {
+            list1.add(event1.getId());
+        }
+        List<ParticipationRequest> confirmedRequests = requestRepository.findConfirmedRequests(list1);
         //Теперь их надо "раскидать" в Map.
         Map<Event, List<ParticipationRequest>> result = new HashMap<>();
 

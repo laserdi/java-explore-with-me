@@ -1,8 +1,6 @@
 package ru.practicum.explore_with_me.service.event;
 
-import ru.practicum.explore_with_me.dto.event.EventFullDto;
-import ru.practicum.explore_with_me.dto.event.EventShortDto;
-import ru.practicum.explore_with_me.dto.event.NewEventDto;
+import ru.practicum.explore_with_me.dto.event.*;
 import ru.practicum.explore_with_me.dto.filter.EventFilter;
 import ru.practicum.explore_with_me.model.Event;
 import ru.practicum.explore_with_me.model.EventState;
@@ -59,4 +57,11 @@ public interface EventService {
      */
     void check(Long eventId, String message);
 
+    /**
+     * Обновить событие от имени админа.
+     * @param eventId ID события.
+     * @param updateEventAdminRequest объект события для обновления.
+     * @return обновлённое событие.
+     */
+    EventFullDto updateEventAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest);
 }

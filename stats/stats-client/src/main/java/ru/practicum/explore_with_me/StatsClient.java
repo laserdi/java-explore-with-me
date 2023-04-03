@@ -1,8 +1,9 @@
 package ru.practicum.explore_with_me;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Slf4j
 public class StatsClient {
     /**
@@ -24,7 +25,7 @@ public class StatsClient {
      * Он позволяет с легкостью вызывать конечные точки REST в одной строке. Он раскрывает следующие группы
      * <a href="https://javarush.com/quests/lectures/questspring.level06.lecture00">перегруженных методов.</a>
      */
-    private RestTemplate restTemplate;
+//    private RestTemplate restTemplate;
     /**
      * <p>Источник здесь.</p>
      * <a href="https://for-each.dev/lessons/b/-spring-value-annotation">...</a>
@@ -32,6 +33,24 @@ public class StatsClient {
     @Value("${statsServerUrl}")
     private String statsServer;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+//    @Autowired
+//    public void StatsClient(RestTemplate restTemplate) {
+//        this.restTemplate = restTemplate;
+//    }
+
+//    @Autowired
+//    public void setRestTemplate(RestTemplate restTemplate1) {
+//        this.restTemplate = restTemplate1;
+//    }
+
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        // Do any additional configuration here
+        return builder.build();
+    }
+
+    private final RestTemplate restTemplate = restTemplate(new RestTemplateBuilder());
 
     /**
      * <p>Получение из БД информации об обращениях к ресурсу.</p>
@@ -43,7 +62,7 @@ public class StatsClient {
      * @return список посещений для разных эндпоинтов.
      */
     public ResponseEntity<List<StatsDtoForView>> getStats(List<String> uris) {
-        return getStats(LocalDateTime.of(1980,1,1,0,0,0),
+        return getStats(LocalDateTime.of(2000, 1, 1, 0, 0, 0),
                 LocalDateTime.now(), uris, false);
     }
 

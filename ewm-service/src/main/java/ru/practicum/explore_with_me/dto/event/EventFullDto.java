@@ -1,5 +1,6 @@
 package ru.practicum.explore_with_me.dto.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -69,6 +70,7 @@ public class EventFullDto {
     /**
      * Список состояний жизненного цикла события.
      */
+    @JsonProperty("state")
     private EventState eventState;
     /**
      * Заголовок.
