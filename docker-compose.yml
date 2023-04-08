@@ -1,5 +1,5 @@
 #https://youtu.be/qS9KYTcWMlY
-version: '3.1'
+version: '3.8'
 services:
   stats-db:
     image: postgres:14-alpine
