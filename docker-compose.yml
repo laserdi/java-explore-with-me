@@ -8,10 +8,10 @@ services:
     ports:
       - "6542:5432"
     environment:
-      - POSTGRES_DB=statsdb
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-      - stats-server-url=http://stats-server:9090/
+      POSTGRES_DB: statsdb
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+#      STATS-SERVER-URL=http://stats-server:9090/
 
 
   stats-server:
@@ -49,8 +49,8 @@ services:
     ports:
       - "6541:5432"
     environment:
-      - SERVER_PORT=http://stats-server:8080
-      - stats-server-url=http://stats-server:9090/
-      - POSTGRES_DB=ewmdb
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+#      SERVER_PORT: http://stats-server:8080
+#      stats-server: url=http://stats-server:9090/
+      POSTGRES_DB: ewmdb
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
