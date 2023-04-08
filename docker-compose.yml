@@ -1,5 +1,5 @@
 #https://youtu.be/qS9KYTcWMlY
-version: '3.8'
+version: '3.1'
 services:
   stats-db:
     image: postgres:14-alpine
@@ -8,7 +8,7 @@ services:
     ports:
       - "6542:5432"
     environment:
-      - POSTGRES_DB=statsDB
+      - POSTGRES_DB=statsdb
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
@@ -22,7 +22,7 @@ services:
     depends_on:
       - stats-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/statsDB
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/statsdb
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
@@ -38,7 +38,7 @@ services:
       - ewm-db
       - stats-server
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewmDB
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewmdb
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
 
@@ -48,6 +48,6 @@ services:
     ports:
       - "6541:5432"
     environment:
-      POSTGRES_DB: ewmDB
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
+      - POSTGRES_DB: ewmdb
+      - POSTGRES_USER: root
+      - POSTGRES_PASSWORD: root
