@@ -10,7 +10,6 @@ import ru.practicum.explore_with_me.service.user.UserService;
 import ru.practicum.explore_with_me.validation.CreateObject;
 
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController("/admin/users")
@@ -56,7 +55,7 @@ public class UserController {
      */
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable @PositiveOrZero Long userId) {
+    public void delete(@PathVariable @Positive Long userId) {
         log.info("Удаление пользователя с ID = {}.", userId);
         userService.delete(userId);
     }

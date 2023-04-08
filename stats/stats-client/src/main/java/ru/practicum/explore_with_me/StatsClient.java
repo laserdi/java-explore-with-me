@@ -25,24 +25,13 @@ public class StatsClient {
      * Он позволяет с легкостью вызывать конечные точки REST в одной строке. Он раскрывает следующие группы
      * <a href="https://javarush.com/quests/lectures/questspring.level06.lecture00">перегруженных методов.</a>
      */
-//    private RestTemplate restTemplate;
     /**
      * <p>Источник здесь.</p>
      * <a href="https://for-each.dev/lessons/b/-spring-value-annotation">...</a>
      */
     @Value("${statsServerUrl}")
     private String statsServer;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-//    @Autowired
-//    public void StatsClient(RestTemplate restTemplate) {
-//        this.restTemplate = restTemplate;
-//    }
-
-//    @Autowired
-//    public void setRestTemplate(RestTemplate restTemplate1) {
-//        this.restTemplate = restTemplate1;
-//    }
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
@@ -58,7 +47,7 @@ public class StatsClient {
      * <p>Помните, что URI-шаблоны автоматически кодируются, как показано в следующем примере:</p>
      * <p>restTemplate.getForObject("https://example.com/hotel list", String.class);</p>
      * Результат запроса по "https://example.com/hotel%20list"
-     * @param uris
+     * @param uris список адресов.
      * @return список посещений для разных эндпоинтов.
      */
     public ResponseEntity<List<StatsDtoForView>> getStats(List<String> uris) {
@@ -95,13 +84,15 @@ public class StatsClient {
                 "uris", urisForExchange.toString(),
                 "unique", unique);
 
-        String uri = statsServer + "/stats?start={start}&end={end}&{uris}&{unique}";
+        String uri = statsServer + "stats?start={start}&end={end}&uris={uris}&unique={unique}";
         log.info("** GET STATS: **\t\t{}", uri);
-        ParameterizedTypeReference<List<StatsDtoForView>> parTypeRef =
-                new ParameterizedTypeReference<>() {
-                };
+
         ResponseEntity<List<StatsDtoForView>> response = restTemplate.exchange(uri, HttpMethod.GET, requestEntity,
-                parTypeRef, uriVariables);
+                new ParameterizedTypeReference<List<StatsDtoForView>>() {
+                },
+                uriVariables);
+
+        //
         log.info(response.toString());
         return response;
     }

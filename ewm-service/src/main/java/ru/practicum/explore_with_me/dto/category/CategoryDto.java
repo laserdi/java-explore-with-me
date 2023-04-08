@@ -16,7 +16,7 @@ import javax.validation.constraints.PositiveOrZero;
  */
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 public class CategoryDto {
     /**

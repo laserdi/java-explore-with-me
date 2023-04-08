@@ -71,6 +71,4 @@ create table if not exists compilations_events
     constraint pk_comp_event primary key (comp_event_id),
     constraint fk_comp foreign key (compilation_id) references compilations (compilation_id),
     constraint fk_event foreign key (event_id) references events (event_id)
---     constraint fk_comp_vs_comp_event foreign key(comp_id) references compilations(compilation_id),
---     constraint fk_event_vs_comp_event foreign key (event_id) references events(event_id)
 );

@@ -19,13 +19,6 @@ public interface EventMapper {
     Event mapFromNewToModel(NewEventDto newEventDto);
 
     NewEventDtoForResponse mapToNewDtoForResponse(Event event);
-    //
-//    @Mapping(source = "id", ignore = true)
-//    @Mapping(target = "paid", source = "event.paid")
-//    @Mapping(target = "annotation", source = "event.annotation")
-//    @Mapping(target = "eventDate", source = "event.eventDate")
-//    NewEventDto mapToNewDto(Event event, EventShortDto eventShortDto);
-
 
     @Mapping(source = "integer", target = "views")
     @Mapping(source = "confRequests", target = "confirmedRequests")
@@ -39,5 +32,7 @@ public interface EventMapper {
     EventFullDto mapFromModelToFullDtoQ(Event event, ViewsForMapper viewsForMapper);
 
     List<EventFullDto> mapFromModelListToFullDtoList(List<Event> eventList);
+
+    List<EventShortDto> mapFromModelListToShortDtoList(List<Event> eventList);
 
 }

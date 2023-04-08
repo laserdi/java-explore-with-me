@@ -23,7 +23,7 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
     int countAllByRequester_IdAndEvent_Id(Long userId, Long eventId);
 
     /**
-     * Запрос списка запросов на участие в определённом событии (для определения лимита запросов).
+     * Запрос списка подтверждённых запросов на участие в определённом событии (для определения лимита запросов).
      */
     @Query("select p from ParticipationRequest p where p.event.id = ?1 and p.statusRequest = 'CONFIRMED'")
     List<ParticipationRequest> findConfirmedRequests(Long eventId);
@@ -34,29 +34,18 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
     /**
      * Поиск списка заявок на участие в событиях из списка.
      * @param ids список идентификаторов событий.
-     * @return список пождтверждённых заявок в каждом событии.
+     * @return список подтверждённых заявок в каждом событии.
      * @statusRequest статус заявки = подтверждён.
      */
     @Query("select p from ParticipationRequest p where p.statusRequest = 'CONFIRMED' and p.event.id in ?1")
     List<ParticipationRequest> findConfirmedRequests(List<Long> ids);
 
-//    @Query("select new ru.practicum.explore_with_me.dto.request.ParticipationRequestDto(count(r.id), r.event.id) " +
-//            "from ParticipationRequest r where r.event.id in (?1) " +
-//            "AND r.statusRequest = 'CONFIRMED' " +
-//            "group by r.event.id " +
-//            "order by count(r.id)")
-//    List<ParticipationRequestDto> getRequestConfirmed(List<Long> eventId);
+    /**
+     * Найти список всех заявок переданных в списке.
+     * @param requestIds список ID заявок на участие.
+     * @return список заявок.
+     */
+    List<ParticipationRequest> findByIdInOrderByIdAsc(List<Long> requestIds);
 
+    List<ParticipationRequest> findAllByEvent_Id(Long eventId);
 }
-
-
-
-
-
-
-
-
-
-
-
-

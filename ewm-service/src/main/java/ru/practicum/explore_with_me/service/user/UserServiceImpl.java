@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<UserDto> findByIds(List<Long> ids, int from, int size) {
-        Pageable pageable = PageRequest.of(from, size, Sort.by("name").ascending());
+        Pageable pageable = PageRequest.of(from, size, Sort.by("id").ascending());
         List<User> users;
         if (ids == null || ids.isEmpty()) {
             //Если параметр пуст или его нет, то получить список всех пользователей.

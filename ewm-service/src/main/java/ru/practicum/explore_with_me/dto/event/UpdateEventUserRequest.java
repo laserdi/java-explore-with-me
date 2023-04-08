@@ -1,7 +1,8 @@
 package ru.practicum.explore_with_me.dto.event;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.explore_with_me.model.Location;
 import ru.practicum.explore_with_me.model.StateAction;
@@ -14,59 +15,51 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@RequiredArgsConstructor
-public class UpdateEventAdminRequest {
-
+@NoArgsConstructor
+public class UpdateEventUserRequest {
+//    /**
+//     * Идентификатор события.
+//     */
+//    private Long eventId;
     /**
      * Новая аннотация.
-     * <p>maxLength: 2000</p>
-     * <p>minLength: 20</p>
      */
     private String annotation;
-
     /**
      * Новая категория.
      */
     private Long category;
-
     /**
      * Новое описание.
-     * maxLength: 7000
-     * minLength: 20
      */
     private String description;
-
     /**
-     * <p>Новые дата и время на которые намечено событие. Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss".</p>
+     * Новые дата и время на которые намечено событие. Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
      */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-
-    /**
-     * Локация.
-     */
-    private Location location;
-
     /**
      * Новое значение флага о платности мероприятия.
+     */
+    private Location location;
+    /**
+     * Надо ли оплачивать участие в событии.
      */
     private Boolean paid;
     /**
      * Новый лимит пользователей.
      */
     private Integer participantLimit;
-
     /**
-     * Нужна ли пре-модерация заявок на участие.
+     * Нужна ли пре-модерация заявок на участие?
      */
     private Boolean requestModeration;
     /**
-     * Новое состояние события.
+     * Изменение состояния события.
      */
     private StateAction stateAction;
     /**
-     * <p>Новый заголовок.</p>
-     * maxLength: 120
-     * <p>minLength: 3</p>
+     * Новый заголовок.
      */
     private String title;
 }

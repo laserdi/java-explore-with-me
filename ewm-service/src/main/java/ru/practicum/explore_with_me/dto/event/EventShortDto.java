@@ -1,13 +1,9 @@
 package ru.practicum.explore_with_me.dto.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
 import ru.practicum.explore_with_me.dto.user.UserShortDto;
 
-import javax.persistence.Transient;
 import java.time.LocalDateTime;
 
 /**
@@ -17,6 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 public class EventShortDto {
     /**
      * <p>Идентификатор.</p>
@@ -35,10 +32,6 @@ public class EventShortDto {
      */
     private CategoryDto category;
 
-    /**
-     * <p>Количество одобренных заявок на участие в данном событии.</p>
-     */
-    private Long confirmedRequests;
 
     /**
      * <p>Дата и время на которые намечено событие (в формате "yyyy-MM-dd HH:mm:ss").</p>
@@ -61,9 +54,14 @@ public class EventShortDto {
      */
     private String title;
     /**
-     * Количество просмотрев события.
+     * <p>Количество одобренных заявок на участие в данном событии.</p>
      */
-    @Transient  //Поле не сохраняем в БД. Оно потом вычисляется.
+    private Integer confirmedRequests;
+
+    /**
+     * <p>Количество просмотров события.</p>
+     * Поле не сохраняем в БД. Оно потом вычисляется.
+     */
     private Integer views;
 
 }

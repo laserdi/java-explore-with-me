@@ -20,6 +20,12 @@ import java.util.List;
 public class CategoryPubController {
     private final CategoryService categoryService;
 
+    /**
+     * <p>Получение категорий.</p>
+     * GET /categories
+     * @param catId ID категории.
+     * @return категория.
+     */
     @GetMapping("/{catId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryDto getCategory(@Positive @PathVariable Long catId) {

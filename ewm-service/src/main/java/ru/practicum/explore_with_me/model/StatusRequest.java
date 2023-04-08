@@ -16,9 +16,9 @@ public enum StatusRequest {
      */
     PENDING,
     /**
-     * опубликовано
+     * отклонено
      */
-    PUBLISHED,
+    REJECTED,
     /**
      * отменено
      */

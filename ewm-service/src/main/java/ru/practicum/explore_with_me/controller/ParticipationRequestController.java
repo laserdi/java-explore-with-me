@@ -26,40 +26,40 @@ public class ParticipationRequestController {
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ParticipationRequestDto> getRequests(@PathVariable Long userId) {
+    public List<ParticipationRequestDto> getRequests(@PathVariable @Positive Long userId) {
         log.info("Получение информации о заявках текущего пользователя на участие в чужих событиях." +
                 "GET /users/{}/requests userId", userId);
         return participationRequestService.getRequestsByUserId(userId);
     }
 
     /**
-     * POST /users/{userId}/requests
-     * <p>Добавление запроса от текущего пользователя на участие в событии.</p>
+     * Добавление запроса от текущего пользователя на участие в событии.
+     * <p>POST /users/{userId}/requests</p>
      * Обратите внимание:
-     * <p>нельзя добавить повторный запрос (Ожидается код ошибки 409)</p>
-     * инициатор события не может добавить запрос на участие в своём событии (Ожидается код ошибки 409)
-     * <p>нельзя участвовать в неопубликованном событии (Ожидается код ошибки 409)</p>
-     * если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
+     * <p>нельзя добавить повторный запрос.</p>
+     * инициатор события не может добавить запрос на участие в своём событии.
+     * <p>нельзя участвовать в неопубликованном событии.</p>
+     * если у события достигнут лимит запросов на участие - необходимо вернуть ошибку.
      * <p>если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти
      * в состояние подтвержденного</p>
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto addRequest(@PathVariable Long userId,
-                                              @RequestParam Long eventId) {
+    public ParticipationRequestDto addRequest(@PathVariable @Positive Long userId,
+                                              @RequestParam @Positive Long eventId) {
         log.info("Добавление запроса от текущего пользователя на участие в событии.\t\tPOST  /users/{userId}/requess userId {}, eventId {}", userId, eventId);
         return participationRequestService.create(userId, eventId);
     }
 
     /**
-     * <p>Отмена своего запроса на участие в событии</p>
+     * <p>Отмена своего запроса на участие в событии.</p>
      * PATCH /users/{userId}/requests/{requestId}/cancel
      */
     @PatchMapping("/{requestId}/cancel")
-    public ParticipationRequestDto cancelRequest(@PathVariable("userId") @Positive long userId,
-                                                 @PathVariable(name = "requestId") @Positive long requestId) {
-        log.info("PATCH /users/{userId}/requests/{requestId}/cancel\t\tОтмена своего запроса с ID = {} на участие в событии " +
-                "пользователя с ID = {}.", requestId, userId);
+    public ParticipationRequestDto cancelRequest(@PathVariable("userId") @Positive Long userId,
+                                                 @PathVariable(name = "requestId") @Positive Long requestId) {
+        log.info(String.format("Отмена своего запроса с ID = %d на участие в событии пользователя с ID = %d.\n" +
+                "PATCH /users/{userId}/requests/{requestId}/cancel", requestId, userId));
         return participationRequestService.cancelRequest(userId, requestId);
     }
 

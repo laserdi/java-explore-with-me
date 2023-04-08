@@ -32,7 +32,7 @@ public class Compilation {
     @ManyToMany // TODO: 29.03.2023 Попытаться сделать LAZY.
     @JoinTable(
             name = "compilations_events",
-            joinColumns = @JoinColumn(name = "comp_id"),
+            joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private Set<Event> events;
 

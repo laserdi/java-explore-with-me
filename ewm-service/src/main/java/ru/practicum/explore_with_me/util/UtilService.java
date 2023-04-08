@@ -8,13 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.StatsClient;
 import ru.practicum.explore_with_me.dto.StatsDtoForView;
 import ru.practicum.explore_with_me.handler.exceptions.StatsException;
-import ru.practicum.explore_with_me.mapper.EventMapper;
 import ru.practicum.explore_with_me.model.Event;
 import ru.practicum.explore_with_me.model.ParticipationRequest;
-import ru.practicum.explore_with_me.repository.CategoryRepository;
-import ru.practicum.explore_with_me.repository.EventRepository;
 import ru.practicum.explore_with_me.repository.ParticipationRequestRepository;
-import ru.practicum.explore_with_me.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,12 +23,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UtilService {
-    private final UserRepository userRepository;
-    private final CategoryRepository categoryRepository;
-    private final EventRepository eventRepository;
     private final ParticipationRequestRepository requestRepository;
     private final StatsClient statsClient;
-    private final EventMapper eventMapper;
 
     /**
      * Получить просмотры списка событий.
@@ -47,7 +39,7 @@ public class UtilService {
         ResponseEntity<List<StatsDtoForView>> response;
         List<StatsDtoForView> stats = new ArrayList<>();
         try {
-            response = statsClient.getStats(LocalDateTime.of(1980, 1, 1,
+            response = statsClient.getStats(LocalDateTime.of(2000, 1, 1,
                     0, 0), LocalDateTime.now(), uris, false);
 
             stats = response.getBody();
@@ -103,11 +95,16 @@ public class UtilService {
         List<ParticipationRequest> confirmedRequests = requestRepository.findConfirmedRequests(list1);
         //Теперь их надо "раскидать" в Map.
         Map<Event, List<ParticipationRequest>> result = new HashMap<>();
-
+        ///////////////////////////////////
+        ///////////////////////////////////
+        //////////////////////////////////
         //Заполняем списки карты.
         for (ParticipationRequest request : confirmedRequests) {
             Event event = request.getEvent();
             List<ParticipationRequest> list = result.get(event);
+            if (list == null) {
+                list = new ArrayList<>();
+            }
             list.add(request);
             result.put(event, list);
         }
@@ -119,8 +116,7 @@ public class UtilService {
      */
     public List<Event> fillConfirmedRequests(List<Event> events, Map<Event, List<ParticipationRequest>> confirmedRequests) {
         if (confirmedRequests == null || confirmedRequests.isEmpty()) {
-            log.info("" +
-                    "Список событий пуст или равен null. Вот он: {}.", confirmedRequests);
+            log.info("Список событий пуст или равен null. Вот он: {}.", confirmedRequests);
             for (Event event : events) {
                 event.setConfirmedRequests(0);
             }

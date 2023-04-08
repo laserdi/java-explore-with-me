@@ -37,4 +37,12 @@ public class EventFilter {
      * дата и время не позже которых должно произойти событие.
      */
     private LocalDateTime rangeEnd;
+    /**
+     * Текст для поиска в аннотации и описании.
+     */
+    private String text;
+    /**
+     * Показывать только доступные события.
+     */
+    Boolean onlyAvailable;
 }

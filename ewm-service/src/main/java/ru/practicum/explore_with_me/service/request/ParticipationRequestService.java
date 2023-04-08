@@ -1,6 +1,8 @@
 package ru.practicum.explore_with_me.service.request;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.dto.request.ParticipationRequestDto;
+import ru.practicum.explore_with_me.model.StatusRequest;
 
 import java.util.List;
 
@@ -30,9 +32,35 @@ public interface ParticipationRequestService {
 
     /**
      * <p>Отмена своего запроса на участие в событии.</p>
-     * @param userId ID пользователя, отменяющего запрос на участие.
+     * @param userId  ID пользователя, отменяющего запрос на участие.
      * @param eventId ID события.
      * @return информация о событии.
      */
     ParticipationRequestDto cancelRequest(Long userId, Long eventId);
+
+    /**
+     * <p>Получение информации о запросах на участие в событии текущего пользователя.</p>
+     * <p>В случае, если по заданным фильтрам не найдено ни одной заявки, возвращает пустой список.</p>
+     * @param eventId ID события.
+     * @return список запросов.
+     */
+    List<ParticipationRequestDto> getRequestsForEvent(Long eventId);
+
+    /**
+     * Найти запросы на участие по ID.
+     * @param ids список ID.
+     * @return список запросов.
+     */
+    List<ParticipationRequestDto> findRequestByIds(List<Long> ids);
+
+    @Transactional
+    ParticipationRequestDto updateRequest(Long idRequest, StatusRequest status);
+
+    /**
+     * Вернуть запрос или сгенерировать исключение.
+     * @param reqId ID запроса на участие.
+     * @param message сообщение об ошибке для сгенерированного исключения.
+     *                Сообщение должно содержать поле для ID или быть null.
+     */
+    ParticipationRequestDto getRequestOrThrow(Long reqId, String message);
 }
