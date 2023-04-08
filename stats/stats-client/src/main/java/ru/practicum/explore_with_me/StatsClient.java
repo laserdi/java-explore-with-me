@@ -29,7 +29,7 @@ public class StatsClient {
      * <p>Источник здесь.</p>
      * <a href="https://for-each.dev/lessons/b/-spring-value-annotation">...</a>
      */
-    @Value("${statsServerUrl}")
+    @Value("${stats-server-url}")
     private String statsServer;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 

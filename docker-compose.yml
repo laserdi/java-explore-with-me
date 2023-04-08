@@ -11,7 +11,7 @@ services:
       - POSTGRES_DB=statsdb
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
-#      - statsServerUrl=http://stats-service:9090/
+      - stats-server-url=http://stats-server:9090/
 
 
   stats-server:
@@ -29,7 +29,7 @@ services:
 
 
   ewm-service:
-    build: /ewm-service
+    build: ./ewm-service/
     image: ewm_service
     container_name: ewm-service
 
@@ -49,8 +49,8 @@ services:
     ports:
       - "6541:5432"
     environment:
-#      - SERVER_PORT=8080
-#      - statsServerUrl=http://stats-server:9090
+      - SERVER_PORT=8080
+      - stats-server-url=http://stats-server:9090/
       - POSTGRES_DB=ewmdb
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
