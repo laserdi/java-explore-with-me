@@ -27,11 +27,11 @@
             <artifactId>jackson-annotations</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.projectlombok</groupId>-->
-<!--            <artifactId>lombok</artifactId>-->
-<!--            <optional>true</optional>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.projectlombok</groupId>-->
+        <!--            <artifactId>lombok</artifactId>-->
+        <!--            <optional>true</optional>-->
+        <!--        </dependency>-->
 
         <!--        Одной из обязательных зависимостей в каждом из сервисов должен быть `Spring BootActuator`.-->
         <!--        Вот идентификаторы для её добавления.-->
@@ -86,6 +86,10 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
