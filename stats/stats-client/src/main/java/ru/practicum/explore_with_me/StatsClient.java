@@ -1,11 +1,15 @@
 package ru.practicum.explore_with_me;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.practicum.explore_with_me.dto.StatsDtoForSave;
@@ -17,29 +21,18 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-//@RequiredArgsConstructor
 @Slf4j
 public class StatsClient {
-    /**
-     * RestTemplate предусматривает API более высокого уровня в отличие от клиентских библиотек HTTP.
-     * Он позволяет с легкостью вызывать конечные точки REST в одной строке. Он раскрывает следующие группы
-     * <a href="https://javarush.com/quests/lectures/questspring.level06.lecture00">перегруженных методов.</a>
-     */
-    /**
-     * <p>Источник здесь.</p>
-     * <a href="https://for-each.dev/lessons/b/-spring-value-annotation">...</a>
-     */
-    @Value("${stats-server.url}")
-    private String statsServer;
+    private final RestTemplate restTemplate;
+    private final String statsServer;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        // Do any additional configuration here
-        return builder.build();
+    @Autowired
+    public StatsClient(@Value("${stats-server.url}") String statsServer, RestTemplateBuilder builder) {
+        this.restTemplate = builder.build();
+        this.statsServer = statsServer;
     }
 
-    private final RestTemplate restTemplate = restTemplate(new RestTemplateBuilder());
 
     /**
      * <p>Получение из БД информации об обращениях к ресурсу.</p>

@@ -8,10 +8,9 @@ services:
     depends_on:
       - stats-db
     environment:
-      - STAT_SERVER_URL=http://stats-server:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/statsdb
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+      - SPRING.DATASOURCE.USERNAME=postgres
+      - SPRING.DATASOURCE.PASSWORD=postgres
 
 
   stats-db:
@@ -20,8 +19,8 @@ services:
       - "6542:5432"
     environment:
       - POSTGRES_DB=statsdb
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
 
 
   ewm-service:
@@ -32,10 +31,10 @@ services:
       - ewm-db
 
     environment:
-      - STAT_SERVER_URL=http://stats-server:9090
+      - STATS_SERVER_URL=http://stats-server:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewmdb
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+      - SPRING.DATASOURCE.USERNAME=postgres
+      - SPRING.DATASOURCE.PASSWORD=postgres
     image: ewm_service
     container_name: ewm-service
 
@@ -45,5 +44,5 @@ services:
       - "6541:5432"
     environment:
       - POSTGRES_DB=ewmdb
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
