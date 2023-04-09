@@ -29,7 +29,7 @@ public class StatsClient {
      * <p>Источник здесь.</p>
      * <a href="https://for-each.dev/lessons/b/-spring-value-annotation">...</a>
      */
-    @Value("${stats-server-url}")
+    @Value("${stats-server.url}")
     private String statsServer;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -84,7 +84,7 @@ public class StatsClient {
                 "uris", urisForExchange.toString(),
                 "unique", unique);
 
-        String uri = statsServer + "stats?start={start}&end={end}&uris={uris}&unique={unique}";
+        String uri = statsServer + "/stats?start={start}&end={end}&uris={uris}&unique={unique}";
         log.info("** GET STATS: **\t\t{}", uri);
 
         ResponseEntity<List<StatsDtoForView>> response = restTemplate.exchange(uri, HttpMethod.GET, requestEntity,
@@ -105,6 +105,6 @@ public class StatsClient {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<StatsDtoForSave> requestEntity = new HttpEntity<>(statsDtoForSave, httpHeaders);
-        restTemplate.exchange(statsServer + "hit", HttpMethod.POST, requestEntity, StatsDtoForSave.class);
+        restTemplate.exchange(statsServer + "/hit", HttpMethod.POST, requestEntity, StatsDtoForSave.class);
     }
 }
