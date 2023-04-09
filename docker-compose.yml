@@ -16,7 +16,7 @@ services:
 
   stats-server:
     build: ./stats/stats-service
-    image: stats-service
+    image: stats_service
     container_name: stats-server
     ports:
       - "9090:9090"
@@ -49,8 +49,6 @@ services:
     ports:
       - "6541:5432"
     environment:
-#      SERVER_PORT: http://stats-server:8080
-#      stats-server: url=http://stats-server:9090/
       POSTGRES_DB: ewmdb
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
