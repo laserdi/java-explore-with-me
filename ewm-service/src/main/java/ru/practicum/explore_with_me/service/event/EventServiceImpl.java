@@ -11,8 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore_with_me.StatsClient;
-import ru.practicum.explore_with_me.dto.StatsDtoForSave;
+import ru.practicum.explore_with_me.WebClientService;
 import ru.practicum.explore_with_me.dto.StatsDtoForView;
 import ru.practicum.explore_with_me.dto.event.*;
 import ru.practicum.explore_with_me.dto.filter.EventFilter;
@@ -21,7 +20,6 @@ import ru.practicum.explore_with_me.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.explore_with_me.dto.request.ParticipationRequestDto;
 import ru.practicum.explore_with_me.dto.user.UserDto;
 import ru.practicum.explore_with_me.handler.exceptions.*;
-import ru.practicum.explore_with_me.mapper.CategoryMapper;
 import ru.practicum.explore_with_me.mapper.EventMapper;
 import ru.practicum.explore_with_me.model.*;
 import ru.practicum.explore_with_me.repository.EventRepository;
@@ -45,16 +43,16 @@ import static ru.practicum.explore_with_me.model.QEvent.event;
 @Service
 //@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequiredArgsConstructor
-@Import({StatsClient.class})
+@Import({WebClientService.class})
 public class EventServiceImpl implements EventService {
 
     private final EventMapper eventMapper;
     private final UserService userService;
     private final EventRepository eventRepository;
     private final CategoryService categoryService;
-    private final StatsClient statsClient;
+    //    private final StatsClient statsClient;
     private final UtilService utilService;
-    private final CategoryMapper categoryMapper;
+    private final WebClientService webClientService;
     private final ParticipationRequestService participationRequestService;
 
     //    @Value("${name-app}")
@@ -230,12 +228,18 @@ public class EventServiceImpl implements EventService {
         }
         //Сохранили статистику на сервере.
         try {
-            StatsDtoForSave statsDtoRequest = new StatsDtoForSave();
-            statsDtoRequest.setApp(nameApp);
-            statsDtoRequest.setIp(httpServletRequest.getRemoteAddr());
-            statsDtoRequest.setUri(httpServletRequest.getRequestURI());
-            statsDtoRequest.setTimestamp(LocalDateTime.now());
-            statsClient.save(statsDtoRequest);
+//            StatsDtoForSave statsDtoRequest = new StatsDtoForSave();
+//            statsDtoRequest.setApp(nameApp);
+//            statsDtoRequest.setIp(httpServletRequest.getRemoteAddr());
+//            statsDtoRequest.setUri(httpServletRequest.getRequestURI());
+//            statsDtoRequest.setTimestamp(LocalDateTime.now());
+            webClientService.saveStats(
+                    nameApp,
+                    httpServletRequest.getRequestURI(),
+                    httpServletRequest.getRemoteAddr(),
+                    LocalDateTime.now()
+            );
+//            statsClient.save(statsDtoRequest);
             log.info("Sending statistics was successful");
         } catch (StatsException e) {
             log.error("Sending statistics failed");
@@ -387,6 +391,8 @@ public class EventServiceImpl implements EventService {
         //Заполняем количество просмотров для списка событий.
         events = utilService.fillConfirmedRequests(events, confirmedRequests);
         Event result = events.get(0);
+        webClientService.saveStats("ewm-service", httpServletRequest.getRequestURI(),
+                httpServletRequest.getRemoteAddr(), LocalDateTime.now());
         log.info("Отправлен ответ на запрос события по ID = {} в общедоступном режиме ", eventId);
         return eventMapper.mapFromModelToFullDto(result);
     }
@@ -795,12 +801,18 @@ public class EventServiceImpl implements EventService {
      */
     private void saveStat(HttpServletRequest request) {
         try {
-            StatsDtoForSave statsDtoForSave = new StatsDtoForSave();
-            statsDtoForSave.setApp(nameApp);
-            statsDtoForSave.setIp(request.getRemoteAddr());
-            statsDtoForSave.setUri(request.getRequestURI());
-            statsDtoForSave.setTimestamp(LocalDateTime.now());
-            statsClient.save(statsDtoForSave);
+//            StatsDtoForSave statsDtoForSave = new StatsDtoForSave();
+//            statsDtoForSave.setApp(nameApp);
+//            statsDtoForSave.setIp(request.getRemoteAddr());
+//            statsDtoForSave.setUri(request.getRequestURI());
+//            statsDtoForSave.setTimestamp(LocalDateTime.now());
+            webClientService.saveStats(
+                    nameApp,
+                    request.getRequestURI(),
+                    request.getRemoteAddr(),
+                    LocalDateTime.now()
+            );
+//            statsClient.save(statsDtoForSave);
             log.info("Информация о запросе по этому url = {}: сохранена.", request.getRequestURI());
         } catch (StatsException e) {
             log.error("Ошибка в работе клиента статистики.");

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor    // используется при десериализации джексоном)
 @AllArgsConstructor
+@Builder(toBuilder = true)
 public class StatsDtoForSave {
     /**
      * {

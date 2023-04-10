@@ -2,10 +2,9 @@ package ru.practicum.explore_with_me.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore_with_me.StatsClient;
+import ru.practicum.explore_with_me.WebClientService;
 import ru.practicum.explore_with_me.dto.StatsDtoForView;
 import ru.practicum.explore_with_me.handler.exceptions.StatsException;
 import ru.practicum.explore_with_me.model.Event;
@@ -24,7 +23,8 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class UtilService {
     private final ParticipationRequestRepository requestRepository;
-    private final StatsClient statsClient;
+//    private final StatsClient statsClient;
+    private final WebClientService webClientService;
 
     /**
      * Получить просмотры списка событий.
@@ -36,13 +36,15 @@ public class UtilService {
         for (Event event : events) {
             uris.add("/events/" + event.getId());
         }
-        ResponseEntity<List<StatsDtoForView>> response;
+//        ResponseEntity<List<StatsDtoForView>> response;
         List<StatsDtoForView> stats = new ArrayList<>();
         try {
-            response = statsClient.getStats(LocalDateTime.of(2000, 1, 1,
+            stats = webClientService.getStats(LocalDateTime.of(2000, 1, 1,
                     0, 0), LocalDateTime.now(), uris, false);
+//            response = statsClient.getStats(LocalDateTime.of(2000, 1, 1,
+//                    0, 0), LocalDateTime.now(), uris, false);
 
-            stats = response.getBody();
+//            stats = response.getBody();
         } catch (StatsException e) {
             log.error(String.format("Ошибка сервиса статистики при получении информации об %s:\t\t%s", uris,
                     e.getMessage()));
