@@ -13,10 +13,7 @@ import ru.practicum.explore_with_me.model.ParticipationRequest;
 import ru.practicum.explore_with_me.repository.ParticipationRequestRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -33,6 +30,9 @@ public class UtilService {
      * @return список событий с заполненными полями количества просмотров.
      */
     public List<StatsDtoForView> getViews(List<Event> events) {
+        if (events == null || events.isEmpty()) {
+            return Collections.emptyList();
+        }
         List<String> uris = new ArrayList<>();
         LocalDateTime start = null;
         for (Event event : events) {
