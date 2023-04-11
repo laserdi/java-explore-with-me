@@ -22,7 +22,7 @@ import java.util.*;
 @Import({WebClientService.class})
 public class UtilService {
     private final ParticipationRequestRepository requestRepository;
-    private final WebClientService webClientService;
+    private final WebClientService statsClient;
 
     /**
      * Получить просмотры списка событий.
@@ -46,7 +46,7 @@ public class UtilService {
         List<StatsDtoForView> stats = new ArrayList<>();
         try {
             log.info("Запрашиваем статистику от сервера статистики.");
-            stats = webClientService.getStats(start, LocalDateTime.now(), uris, true);
+            stats = statsClient.getStats(start, LocalDateTime.now(), uris, true);
         } catch (StatsException e) {
             log.error(String.format("Ошибка сервиса статистики при получении информации об %s:\t\t%s", uris,
                     e.getMessage()));

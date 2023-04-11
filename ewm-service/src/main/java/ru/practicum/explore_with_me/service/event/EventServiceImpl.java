@@ -50,7 +50,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final CategoryService categoryService;
     private final UtilService utilService;
-    private final WebClientService webClientService;
+    private final WebClientService statsClient;
     private final ParticipationRequestService participationRequestService;
     private static final String nameApp = "ewm-service";
 
@@ -220,7 +220,7 @@ public class EventServiceImpl implements EventService {
         }
         //Сохранили статистику на сервере.
         try {
-            webClientService.saveStats(
+            statsClient.save(
                     nameApp,
                     httpServletRequest.getRequestURI(),
                     httpServletRequest.getRemoteAddr(),
@@ -371,7 +371,7 @@ public class EventServiceImpl implements EventService {
         //Заполняем количество просмотров для списка событий.
         events = utilService.fillConfirmedRequests(events, confirmedRequests);
         Event result = events.get(0);
-        webClientService.saveStats("ewm-service", httpServletRequest.getRequestURI(),
+        statsClient.save(nameApp, httpServletRequest.getRequestURI(),
                 httpServletRequest.getRemoteAddr(), LocalDateTime.now());
         log.info("Отправлен ответ на запрос события по ID = {} в общедоступном режиме ", eventId);
         return eventMapper.mapFromModelToFullDto(result);
@@ -776,7 +776,7 @@ public class EventServiceImpl implements EventService {
      */
     private void saveStat(HttpServletRequest request) {
         try {
-            webClientService.saveStats(
+            statsClient.save(
                     nameApp,
                     request.getRequestURI(),
                     request.getRemoteAddr(),

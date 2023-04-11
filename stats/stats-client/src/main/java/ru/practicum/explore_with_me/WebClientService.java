@@ -26,10 +26,10 @@ public class WebClientService {
         this.webClient = webClientBuilder.build();
     }
 
-    public void saveStats(String app,
-                        String uri,
-                        String ip,
-                        LocalDateTime timestamp) {
+    public void save(String app,
+                     String uri,
+                     String ip,
+                     LocalDateTime timestamp) {
         StatsDtoForSave statsDtoForSave = StatsDtoForSave.builder()
                 .app(app)
                 .uri(uri)
