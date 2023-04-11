@@ -6,10 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.explore_with_me.validation.CreateObject;
 import ru.practicum.explore_with_me.validation.UpdateObject;
-import ru.practicum.explore_with_me.validation.ViewObject;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 /**
@@ -27,8 +25,6 @@ public class CategoryDto {
      * <p>Идентификатор категории.</p>
      * example: 1
      */
-    @PositiveOrZero(groups = {UpdateObject.class}, message = "При обновлении категории необходимо передать её ID.")
-    @PositiveOrZero(groups = {ViewObject.class}, message = "При запросе категории необходимо передать её ID.")
     private Long id;
     /**
      * <p>Название категории.</p>

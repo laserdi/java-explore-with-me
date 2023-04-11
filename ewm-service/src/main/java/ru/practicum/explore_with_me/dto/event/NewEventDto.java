@@ -45,11 +45,6 @@ public class NewEventDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     /**
-     * Организатор события.
-     * <p>ID текущего пользователя</p>
-     */
-    private Long userId;
-    /**
      * Географические координаты.
      */
     @Embedded       //Здесь внедряются сущности класса Location.
@@ -63,11 +58,6 @@ public class NewEventDto {
      */
     @PositiveOrZero
     private int participantLimit;
-    /**
-     * Дата и время публикации события (в формате "yyyy-MM-dd HH:mm:ss").
-     */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime publishedOn;
     /**
      * Нужна ли пре-модерация заявок на участие.
      */

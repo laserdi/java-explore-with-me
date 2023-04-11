@@ -28,8 +28,6 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
     @Query("select p from ParticipationRequest p where p.event.id = ?1 and p.statusRequest = 'CONFIRMED'")
     List<ParticipationRequest> findConfirmedRequests(Long eventId);
 
-    //List<ParticipationRequest>findAllByStatusRequestAndEvent_Id
-    //getAllByStatusRequestAndEvent_Id
 
     /**
      * Поиск списка заявок на участие в событиях из списка.

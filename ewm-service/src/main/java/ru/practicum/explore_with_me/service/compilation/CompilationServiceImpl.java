@@ -138,7 +138,6 @@ public class CompilationServiceImpl implements CompilationService {
         //Конвертируем события в DTO, распределив их по подборкам.
         for (Compilation c : compilations) {
             List<EventShortDto> eventArrayList = new ArrayList<>();
-//            CompilationDto compilationDto = compilationMapper.mapToDto(c);
             CompilationDto compilationDto = CustomMapper.mapFromNewDtoToModel(c);
             compilationDto.setEvents(new ArrayList<>());
             Set<Event> eventSet = c.getEvents();
@@ -152,20 +151,6 @@ public class CompilationServiceImpl implements CompilationService {
             compilationDto.setEvents(eventArrayList);
             result.add(compilationDto);
         }
-
-//        //Список переводим в ДТО-список.
-//        List<CompilationDto> result = compilations.stream().map(compilationMapper::mapToDto)
-//                .collect(Collectors.toList());
-//
-//        //Заполняем поля Set<EventShortDto> в result.
-//        int i = 1;
-//        for (Compilation c : compilations) {
-//            i++;
-//            System.out.println("Событие №" + i + "\t" + c.getEvents());
-//        }
-//        for (Compilation comp : compilations)
-//            result.setEvents(eventMapper.mapFromModelListToShortDtoList(events));
-
         return result;
     }
 

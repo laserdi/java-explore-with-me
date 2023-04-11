@@ -2,6 +2,7 @@ package ru.practicum.explore_with_me.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.WebClientService;
@@ -21,6 +22,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Import({WebClientService.class})
 public class UtilService {
     private final ParticipationRequestRepository requestRepository;
     private final WebClientService webClientService;
@@ -43,8 +45,8 @@ public class UtilService {
         }
         List<StatsDtoForView> stats = new ArrayList<>();
         try {
-            stats = webClientService.getStats(LocalDateTime.of(2000, 1, 1,
-                    0, 0), LocalDateTime.now(), uris, true);
+            log.info("Запрашиваем статистику от сервера статистики.");
+            stats = webClientService.getStats(start, LocalDateTime.now(), uris, true);
         } catch (StatsException e) {
             log.error(String.format("Ошибка сервиса статистики при получении информации об %s:\t\t%s", uris,
                     e.getMessage()));

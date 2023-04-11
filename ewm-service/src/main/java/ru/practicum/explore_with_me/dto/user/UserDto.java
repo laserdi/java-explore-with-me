@@ -1,6 +1,5 @@
 package ru.practicum.explore_with_me.dto.user;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,6 @@ public class UserDto {
     private String name;
 
     @Email(groups = {CreateObject.class}, message = "При создании пользователя email должен быть адресом эл. почты.")
-    @NotEmpty(groups = {CreateObject.class}, message = "error with email")
-    @JsonView()
+    @NotEmpty(groups = {CreateObject.class}, message = "При создании пользователя email не должен быть пустым или null.")
     private String email;
 }

@@ -3,6 +3,7 @@ package ru.practicum.explore_with_me.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.request.ParticipationRequestDto;
 import ru.practicum.explore_with_me.service.request.ParticipationRequestService;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users/{userId}/requests")
+@Validated
 public class ParticipationRequestController {
     private final ParticipationRequestService participationRequestService;
 

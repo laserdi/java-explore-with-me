@@ -114,6 +114,4 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findById(catId).orElseThrow(
                 () -> new NotFoundRecordInBD(String.format(finalMessage, catId)));
     }
-
-
 }
