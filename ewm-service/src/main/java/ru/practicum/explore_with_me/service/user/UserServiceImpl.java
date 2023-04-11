@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
      * POST
      * <p>/admin/users</p>
      */
+    @Transactional
     @Override
     public UserDto save(UserDto userDto) {
         User newUser = userMapper.mapToUser(userDto);
@@ -66,10 +67,10 @@ public class UserServiceImpl implements UserService {
      * <p>/admin/users/{userId}</p>
      * @param userId ID удаляемого пользователя.
      */
+    @Transactional
     @Override
     public void delete(Long userId) {
         UserDto oldUser = check(userId, "При удалении из БД пользователь с ID = %d не найден.");
-        // TODO: 26.03.2023 Проверить отсутствие "хвостов" удаляемого пользователя.
         userRepository.deleteById(userId);
         log.info("Выполнено удаление пользователя с ID = {} и  name = {}", userId, oldUser.getName());
     }

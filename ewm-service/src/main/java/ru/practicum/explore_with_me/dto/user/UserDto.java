@@ -6,11 +6,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import ru.practicum.explore_with_me.validation.CreateObject;
-import ru.practicum.explore_with_me.validation.ViewObject;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * Пользователь (DTO-модель).
@@ -25,7 +24,6 @@ public class UserDto {
      * <p>Идентификатор.</p>
      * example: 3
      */
-    @PositiveOrZero(groups = {ViewObject.class}, message = "При запросе пользователя из БД необходим его ID.")
     private Long id;
 
     /**
@@ -36,6 +34,7 @@ public class UserDto {
     private String name;
 
     @Email(groups = {CreateObject.class}, message = "При создании пользователя email должен быть адресом эл. почты.")
+    @NotEmpty(groups = {CreateObject.class}, message = "error with email")
     @JsonView()
     private String email;
 }

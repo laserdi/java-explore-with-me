@@ -23,7 +23,6 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class UtilService {
     private final ParticipationRequestRepository requestRepository;
-//    private final StatsClient statsClient;
     private final WebClientService webClientService;
 
     /**
@@ -33,18 +32,19 @@ public class UtilService {
      */
     public List<StatsDtoForView> getViews(List<Event> events) {
         List<String> uris = new ArrayList<>();
+        LocalDateTime start = null;
         for (Event event : events) {
             uris.add("/events/" + event.getId());
+            if (start == null) {
+                start = event.getCreatedOn();
+            } else if (start.isBefore(event.getCreatedOn())) {
+                start = event.getCreatedOn();
+            }
         }
-//        ResponseEntity<List<StatsDtoForView>> response;
         List<StatsDtoForView> stats = new ArrayList<>();
         try {
             stats = webClientService.getStats(LocalDateTime.of(2000, 1, 1,
-                    0, 0), LocalDateTime.now(), uris, false);
-//            response = statsClient.getStats(LocalDateTime.of(2000, 1, 1,
-//                    0, 0), LocalDateTime.now(), uris, false);
-
-//            stats = response.getBody();
+                    0, 0), LocalDateTime.now(), uris, true);
         } catch (StatsException e) {
             log.error(String.format("Ошибка сервиса статистики при получении информации об %s:\t\t%s", uris,
                     e.getMessage()));
@@ -97,9 +97,6 @@ public class UtilService {
         List<ParticipationRequest> confirmedRequests = requestRepository.findConfirmedRequests(list1);
         //Теперь их надо "раскидать" в Map.
         Map<Event, List<ParticipationRequest>> result = new HashMap<>();
-        ///////////////////////////////////
-        ///////////////////////////////////
-        //////////////////////////////////
         //Заполняем списки карты.
         for (ParticipationRequest request : confirmedRequests) {
             Event event = request.getEvent();

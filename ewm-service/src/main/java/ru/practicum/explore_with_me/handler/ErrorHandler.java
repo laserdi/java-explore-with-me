@@ -2,16 +2,44 @@ package ru.practicum.explore_with_me.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.explore_with_me.handler.exceptions.*;
 
+import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
 
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleMethodArgumentNotValidException(final MethodArgumentNotValidException ex) {
+        log.error("Ошибка 400. {}", ex.getMessage());
+
+        ApiError apiError = new ApiError(ex.getMessage(),
+                "Ошибка во входных данных примитивов.", HttpStatus.BAD_REQUEST);
+        return apiError;
+    }
+
+    /**
+     * Ловит "плохие" сложные объекты.
+     * @param ex исключение.
+     * @return сведения об ошибке.
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleConstraintViolationException(final ConstraintViolationException ex) {
+        log.error("Ошибка 400. {}", ex.getMessage());
+
+        ApiError apiError = new ApiError(ex.getMessage(),
+                "Ошибка во входных данных сложных объектов.", HttpStatus.BAD_REQUEST);
+        return apiError;
+    }
+
     @ExceptionHandler(NotFoundRecordInBD.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleNotFoundRecordInBD(final NotFoundRecordInBD ex) {

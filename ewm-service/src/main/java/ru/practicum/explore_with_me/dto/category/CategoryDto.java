@@ -1,12 +1,16 @@
 package ru.practicum.explore_with_me.dto.category;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.explore_with_me.validation.CreateObject;
 import ru.practicum.explore_with_me.validation.UpdateObject;
 import ru.practicum.explore_with_me.validation.ViewObject;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 
 /**
  * Категория
@@ -30,7 +34,8 @@ public class CategoryDto {
      * <p>Название категории.</p>
      * example: Концерты
      */
-    @NotBlank(groups = {CreateObject.class}, message = "При создании категории должно быть её название.")
-    @NotBlank(groups = {UpdateObject.class}, message = "При обновлении категории необходимо передать её название.")
+    @NotNull(groups = {CreateObject.class, UpdateObject.class}, message = "Имя категории не может быть Null.")
+    @Size(min = 1, max = 200, groups = {CreateObject.class}, message = "При создании категории должно быть её название.")
+    @Size(min = 1, max = 200, groups = {UpdateObject.class}, message = "При обновлении категории необходимо передать её название.")
     private String name;
 }

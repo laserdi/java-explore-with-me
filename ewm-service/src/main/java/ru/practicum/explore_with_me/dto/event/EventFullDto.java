@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
+import ru.practicum.explore_with_me.dto.user.UserShortDto;
 import ru.practicum.explore_with_me.model.EventState;
 import ru.practicum.explore_with_me.model.Location;
-import ru.practicum.explore_with_me.model.User;
 
 import javax.persistence.Embedded;
 import java.time.LocalDateTime;
@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @RequiredArgsConstructor
-//@NoArgsConstructor
 public class EventFullDto {
     private Long id;
 
@@ -45,7 +44,7 @@ public class EventFullDto {
     /**
      * Организатор события.
      */
-    private User initiator;
+    private UserShortDto initiator;
     /**
      * Географические координаты.
      */

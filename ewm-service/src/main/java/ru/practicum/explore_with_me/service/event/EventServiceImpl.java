@@ -41,7 +41,6 @@ import static ru.practicum.explore_with_me.model.QEvent.event;
 
 @Slf4j
 @Service
-//@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @RequiredArgsConstructor
 @Import({WebClientService.class})
 public class EventServiceImpl implements EventService {
@@ -50,12 +49,9 @@ public class EventServiceImpl implements EventService {
     private final UserService userService;
     private final EventRepository eventRepository;
     private final CategoryService categoryService;
-    //    private final StatsClient statsClient;
     private final UtilService utilService;
     private final WebClientService webClientService;
     private final ParticipationRequestService participationRequestService;
-
-    //    @Value("${name-app}")
     private static final String nameApp = "ewm-service";
 
     /**
@@ -126,7 +122,6 @@ public class EventServiceImpl implements EventService {
 
         EventFilter eventFilter = EventFilter.builder()
                 .userIds(userIds)
-//                .states(states.stream().map(Enum::toString).collect(Collectors.toList()))
                 .states(states)
                 .categories(categories)
                 .rangeStart(rangeStart)
@@ -162,15 +157,12 @@ public class EventServiceImpl implements EventService {
                 .add(predicateForText)
                 .add(booleanBuilderForStates.getValue())
                 .buildAnd();
-//        Predicate filterForAll = booleanBuilderForStates.and(qPredicatesWithoutStatesAndText.buildAnd());
         List<Event> events = eventRepository.findAll(filterForAll, pageable).toList();
 
         //Надо заполнить просмотры и количество подтв. запросов.
         //Получаем список просмотров от сервера статистики.
         List<StatsDtoForView> stats = utilService.getViews(events);
         //Заполняем поля просмотров.
-//        List<Event> result = new ArrayList<>();
-//        result = utilService.fillViews(events, stats);
         events = utilService.fillViews(events, stats);
 
         //Получаем список подтверждённых заявок для каждого события.
@@ -228,18 +220,12 @@ public class EventServiceImpl implements EventService {
         }
         //Сохранили статистику на сервере.
         try {
-//            StatsDtoForSave statsDtoRequest = new StatsDtoForSave();
-//            statsDtoRequest.setApp(nameApp);
-//            statsDtoRequest.setIp(httpServletRequest.getRemoteAddr());
-//            statsDtoRequest.setUri(httpServletRequest.getRequestURI());
-//            statsDtoRequest.setTimestamp(LocalDateTime.now());
             webClientService.saveStats(
                     nameApp,
                     httpServletRequest.getRequestURI(),
                     httpServletRequest.getRemoteAddr(),
                     LocalDateTime.now()
             );
-//            statsClient.save(statsDtoRequest);
             log.info("Sending statistics was successful");
         } catch (StatsException e) {
             log.error("Sending statistics failed");
@@ -280,8 +266,6 @@ public class EventServiceImpl implements EventService {
         //Получаем список просмотров от сервера статистики.
         List<StatsDtoForView> stats = utilService.getViews(events);
         //Заполняем поля просмотров.
-//        List<Event> result = new ArrayList<>();
-//        result = utilService.fillViews(events, stats);
         events = utilService.fillViews(events, stats);
 
         //Получаем список подтверждённых заявок для каждого события.
@@ -345,8 +329,6 @@ public class EventServiceImpl implements EventService {
         List<Event> events = List.of(eventFromDb);
         List<StatsDtoForView> stats = utilService.getViews(events);
         //Заполняем поля просмотров.
-//        List<Event> result = new ArrayList<>();
-//        result = utilService.fillViews(events, stats);
         events = utilService.fillViews(events, stats);
 
         //Получаем список подтверждённых заявок для каждого события.
@@ -382,8 +364,6 @@ public class EventServiceImpl implements EventService {
         List<Event> events = List.of(event);
         List<StatsDtoForView> stats = utilService.getViews(events);
         //Заполняем поля просмотров.
-//        List<Event> result = new ArrayList<>();
-//        result = utilService.fillViews(events, stats);
         events = utilService.fillViews(events, stats);
 
         //Получаем список подтверждённых заявок для каждого события.
@@ -423,8 +403,6 @@ public class EventServiceImpl implements EventService {
         List<Event> events = List.of(event);
         List<StatsDtoForView> stats = utilService.getViews(events);
         //Заполняем поля просмотров.
-//        List<Event> result = new ArrayList<>();
-//        result = utilService.fillViews(events, stats);
         events = utilService.fillViews(events, stats);
 
         //Получаем список подтверждённых заявок для каждого события.
@@ -459,8 +437,6 @@ public class EventServiceImpl implements EventService {
         List<Event> events = List.of(event);
         List<StatsDtoForView> stats = utilService.getViews(events);
         //Заполняем поля просмотров.
-//        List<Event> result = new ArrayList<>();
-//        result = utilService.fillViews(events, stats);
         events = utilService.fillViews(events, stats);
 
         //Получаем список подтверждённых заявок для каждого события.
@@ -665,7 +641,6 @@ public class EventServiceImpl implements EventService {
      * @param newEvent обновляющий объект.
      */
     private void checkStateAction(Event oldEvent, UpdateEventAdminRequest newEvent) {
-//        if (newEvent.getStateAction() == null) return;
 
         if (newEvent.getStateAction() == StateAction.PUBLISH_EVENT) {
             if (oldEvent.getEventState() != EventState.PENDING) {
@@ -801,18 +776,12 @@ public class EventServiceImpl implements EventService {
      */
     private void saveStat(HttpServletRequest request) {
         try {
-//            StatsDtoForSave statsDtoForSave = new StatsDtoForSave();
-//            statsDtoForSave.setApp(nameApp);
-//            statsDtoForSave.setIp(request.getRemoteAddr());
-//            statsDtoForSave.setUri(request.getRequestURI());
-//            statsDtoForSave.setTimestamp(LocalDateTime.now());
             webClientService.saveStats(
                     nameApp,
                     request.getRequestURI(),
                     request.getRemoteAddr(),
                     LocalDateTime.now()
             );
-//            statsClient.save(statsDtoForSave);
             log.info("Информация о запросе по этому url = {}: сохранена.", request.getRequestURI());
         } catch (StatsException e) {
             log.error("Ошибка в работе клиента статистики.");
@@ -824,8 +793,6 @@ public class EventServiceImpl implements EventService {
         //Получаем список просмотров от сервера статистики.
         List<StatsDtoForView> stats = utilService.getViews(events);
         //Заполняем поля просмотров.
-//        List<Event> result = new ArrayList<>();
-//        result = utilService.fillViews(events, stats);
         events = utilService.fillViews(events, stats);
 
         //Получаем список подтверждённых заявок для каждого события.

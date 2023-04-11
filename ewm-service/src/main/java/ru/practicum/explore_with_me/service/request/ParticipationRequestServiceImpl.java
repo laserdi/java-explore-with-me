@@ -75,6 +75,11 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             );
         }
 
+        if (eventFromDb.getParticipantLimit() == 0) {
+            throw new OperationFailedException(
+                    String.format("Нельзя отправить запрос на событие, где отсутствуют ограничения на участие.")
+            );
+        }
         if (participationRequestRepository.countAllByRequester_IdAndEvent_Id(userId, eventId) != 0) {
             throw new OperationFailedException(
                     String.format("Нельзя добавить повторный запрос на участие в событии ID = %d.", eventId));

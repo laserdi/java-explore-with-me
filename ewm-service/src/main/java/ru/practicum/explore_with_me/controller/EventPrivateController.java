@@ -98,31 +98,11 @@ public class EventPrivateController {
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEvent(@PathVariable @Positive Long userId,
                                     @PathVariable @Positive Long eventId,
-                                    @RequestBody UpdateEventUserRequest updateEventUserRequest) {
+                                    @RequestBody @Valid UpdateEventUserRequest updateEventUserRequest) {
         log.info("Обновление события от пользователя. Patch /users/{}/events/ updateEvent = {}.",
                 userId, updateEventUserRequest);
         return eventService.updateEventUser(userId, eventId, updateEventUserRequest);
     }
-
-    /**
-     * Отмена события добавленного текущим пользователем.
-     * <p>PATCH /users/{userId}/events/{eventId}</p>
-     * Обратите внимание: Отменить можно только событие в состоянии ожидания модерации.
-     * @param userId  ID пользователя.
-     * @param eventId ID отменяемого события.
-     * @return отменённое событие.
-     */
-    @PatchMapping("deleteeeee/{eventId}")
-    @ResponseStatus(HttpStatus.OK)
-    public EventFullDto cancelEvent(@PathVariable @Positive(message = "Значение {userId} должно быть больше нуля.")
-                                    Long userId,
-                                    @PathVariable @Positive(message = "Значение {eventId} должно быть больше нуля.")
-                                    Long eventId) {
-        log.info("Отмена события добавленного текущим пользователем.\n" +
-                "PATCH /users/{userId}/events/{eventId}, userId = {}, eventId = {}.", userId, eventId);
-        return eventService.cancelEvent(userId, eventId);
-    }
-
 
     /**
      * <p>Получение информации о запросах на участие в событии текущего пользователя.</p>
@@ -139,7 +119,6 @@ public class EventPrivateController {
         log.info("GET /users/{userId}/events//{eventId}/requests userId {}, eventId {}", userId, eventId);
         return eventService.getRequestsEvent(userId, eventId);
     }
-
 
     /**
      * Изменение статуса (подтверждена, отменена) заявок на участие в событии текущего пользователя.

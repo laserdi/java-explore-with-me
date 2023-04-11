@@ -29,7 +29,7 @@ public class Compilation {
     /**
      * Список событий входящих в подборку, используется EventShortDto - Краткая информация о событии).
      */
-    @ManyToMany // TODO: 29.03.2023 Попытаться сделать LAZY.
+    @ManyToMany
     @JoinTable(
             name = "compilations_events",
             joinColumns = @JoinColumn(name = "compilation_id"),

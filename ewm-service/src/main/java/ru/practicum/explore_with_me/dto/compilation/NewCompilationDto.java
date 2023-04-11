@@ -20,16 +20,13 @@ public class NewCompilationDto {
     /**
      * Список идентификаторов событий входящих в подборку.
      */
-//    @NotNull
-//    @NotEmpty
     private List<Long> events;
 
     /**
      * Закреплена ли подборка на главной странице сайта.
      * <p>default value = false;</p>
      */
-//    @NotNull
-    private Boolean pinned;
+    private boolean pinned;
 
     /**
      * Заголовок подборки.

@@ -6,7 +6,6 @@ import ru.practicum.explore_with_me.model.Category;
 import java.util.List;
 
 public interface CategoryService {
-    ///admin/categories
 
     /**
      * Получить список всех категорий.
@@ -39,7 +38,6 @@ public interface CategoryService {
     /**
      * Удалить категорию по ID.
      * @param catId ID удаляемой категории.
-     * @return удалённая категория.
      */
     void delete(Long catId);
 

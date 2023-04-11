@@ -47,7 +47,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto addCompilation(NewCompilationDto newCompilationDto) {
-        //Считаем собятия из БД.
+        //Считаем события из БД.
         Compilation compilation = compilationMapper.mapFromNewDtoToModel(newCompilationDto);
 
         List<Event> events = new ArrayList<>();

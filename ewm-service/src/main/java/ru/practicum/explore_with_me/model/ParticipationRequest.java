@@ -20,14 +20,13 @@ public class ParticipationRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "req_id")
-    Long id;
+    private Long id;
     /**
      * <p>Дата и время создания заявки.</p>
      * <p>created	string</p>
      * example: 2022-09-06T21:10:05.432
      */
     @Column(name = "req_created")
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
     /**

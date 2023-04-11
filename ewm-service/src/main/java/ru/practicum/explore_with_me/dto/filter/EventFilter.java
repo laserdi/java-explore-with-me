@@ -44,5 +44,5 @@ public class EventFilter {
     /**
      * Показывать только доступные события.
      */
-    Boolean onlyAvailable;
+    private Boolean onlyAvailable;
 }

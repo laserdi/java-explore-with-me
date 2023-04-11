@@ -10,8 +10,11 @@ import ru.practicum.explore_with_me.service.user.UserService;
 import ru.practicum.explore_with_me.validation.CreateObject;
 
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import java.util.Collections;
 import java.util.List;
 
+@Validated
 @RestController("/admin/users")
 @Slf4j
 @RequiredArgsConstructor
@@ -29,10 +32,13 @@ public class UserController {
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> findAll(@RequestParam List<Long> ids,
-                                 @Positive @RequestParam(required = false, defaultValue = "0") int from,
-                                 @Positive @RequestParam(required = false, defaultValue = "10") int size) {
+    public List<UserDto> findAll(@RequestParam(required = false) List<Long> ids,
+                                 @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                 @Positive @RequestParam(defaultValue = "10") int size) {
         log.info("GET /admin/users. ids={}, from={}, size={}", ids, from, size);
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
         return userService.findByIds(ids, from, size);
     }
 

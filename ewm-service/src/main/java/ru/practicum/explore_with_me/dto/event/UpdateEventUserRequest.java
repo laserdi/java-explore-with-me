@@ -7,6 +7,8 @@ import lombok.Setter;
 import ru.practicum.explore_with_me.model.Location;
 import ru.practicum.explore_with_me.model.StateAction;
 
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 /**
@@ -17,13 +19,10 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class UpdateEventUserRequest {
-//    /**
-//     * Идентификатор события.
-//     */
-//    private Long eventId;
     /**
      * Новая аннотация.
      */
+    @Size(min = 20, max = 2000)
     private String annotation;
     /**
      * Новая категория.
@@ -32,6 +31,7 @@ public class UpdateEventUserRequest {
     /**
      * Новое описание.
      */
+    @Size(min = 20, max = 7000)
     private String description;
     /**
      * Новые дата и время на которые намечено событие. Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
@@ -49,11 +49,12 @@ public class UpdateEventUserRequest {
     /**
      * Новый лимит пользователей.
      */
+    @PositiveOrZero
     private Integer participantLimit;
     /**
      * Нужна ли пре-модерация заявок на участие?
      */
-    private Boolean requestModeration;
+    private Boolean requestModeration = true;
     /**
      * Изменение состояния события.
      */
@@ -61,5 +62,6 @@ public class UpdateEventUserRequest {
     /**
      * Новый заголовок.
      */
+    @Size(min = 3, max = 120, message = "Заголовок должен содержать от 3-х до 120 символов.")
     private String title;
 }

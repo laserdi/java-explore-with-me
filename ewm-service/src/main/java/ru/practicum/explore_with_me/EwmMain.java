@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication(scanBasePackages = {"ru.practicum.explore_with_me"})
-//@Import({StatsClient.class}, )
 @Import({WebClientService.class})
 public class EwmMain {
     public static void main(String[] args) {

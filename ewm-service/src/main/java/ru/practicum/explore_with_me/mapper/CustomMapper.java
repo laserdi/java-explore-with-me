@@ -1,5 +1,7 @@
 package ru.practicum.explore_with_me.mapper;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
 import ru.practicum.explore_with_me.dto.compilation.CompilationDto;
 import ru.practicum.explore_with_me.dto.event.EventShortDto;
@@ -10,6 +12,9 @@ import ru.practicum.explore_with_me.model.Event;
 import java.util.ArrayList;
 import java.util.List;
 
+//приватный конструктор без параметров, тем самым запретив создание объектов этого класса)
+// Так это не имеет смысла ввиду того, что все в этом классе static, а значит класс не имеет состояния)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CustomMapper {
     public static CompilationDto mapFromNewDtoToModel(Compilation compilation) {
         List<EventShortDto> eventShortDtoList = new ArrayList<>();

@@ -31,6 +31,4 @@ public enum EventState {
         }
         return states.stream().map(EventState::valueOf).collect(Collectors.toList());
     }
-
-//    public static List<>
 }

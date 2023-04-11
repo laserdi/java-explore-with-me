@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
@@ -55,6 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @param categoryDto DTO-категория.
      * @return добавленный объект DTO-категории.
      */
+    @Transactional
     @Override
     public CategoryDto save(CategoryDto categoryDto) {
         Category newCategory = categoryMapper.mapToCategory(categoryDto);
@@ -69,6 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @param categoryDto DTO-категория.
      * @return изменённая категория.
      */
+    @Transactional
     @Override
     public CategoryDto update(Long id, CategoryDto categoryDto) {
         categoryRepository.findById(id).orElseThrow(() -> new NotFoundRecordInBD(
@@ -86,15 +88,14 @@ public class CategoryServiceImpl implements CategoryService {
      * Удалить категорию по ID.
      * @param catId ID удаляемой категории.
      */
+    @Transactional
     @Override
     public void delete(Long catId) {
         Category oldCategory = categoryRepository.findById(catId).orElseThrow(
                 () -> new NotFoundRecordInBD(String.format(
                         "При удалении категории в БД не найдена категория с ID = %d", catId)));
-        // TODO: 26.03.2023 Добавить проверку отсутствия событий в данной категории.
         categoryRepository.deleteById(catId);
         log.info("Выполнено удаление из БД категории с ID = {}, name = {}.", catId, oldCategory.getName());
-//        return categoryMapper.mapToCategoryDto(oldCategory);
     }
 
     /**
