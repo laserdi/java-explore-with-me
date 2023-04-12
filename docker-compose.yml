@@ -1,34 +1,48 @@
 #https://youtu.be/qS9KYTcWMlY
 version: '3.1'
 services:
-  stats-db:
-    image: postgres:14-alpine
-    container_name: stats-db
-    restart: always
-    ports:
-      - "6542:5432"
-    environment:
-      - POSTGRES_DB=statsdb
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-
-
   stats-server:
     build: ./stats/stats-service
-    image: stats_service
-    container_name: stats-server
     ports:
       - "9090:9090"
     depends_on:
       - stats-db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/statsdb
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
+      - SPRING.DATASOURCE.USERNAME=postgres
+      - SPRING.DATASOURCE.PASSWORD=postgres
 
-#  ewm-service:
-#    ports:
-#      - "8080:8080"
-#
-#  ewm-db:
-#    image: postgres:14-alpine
+
+  stats-db:
+    image: postgres:14-alpine
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_DB=statsdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+
+  ewm-service:
+    build: ./ewm-service/
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ewm-db
+
+    environment:
+      - STATS_SERVER_URL=http://stats-server:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewmdb
+      - SPRING.DATASOURCE.USERNAME=postgres
+      - SPRING.DATASOURCE.PASSWORD=postgres
+    image: ewm_service
+    container_name: ewm-service
+
+  ewm-db:
+    image: postgres:14-alpine
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_DB=ewmdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
