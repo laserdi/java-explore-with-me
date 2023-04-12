@@ -17,6 +17,7 @@ Template repository for ExploreWithMe project.
 
 Удаление комментария с ID = {} пользователем с ID = {}.
         Delete      /comments/{comId}/user/{userId}
+
 Удаление комментария с ID = {} администратором.
         Delete      /admin/comments/{comId}
 ```
