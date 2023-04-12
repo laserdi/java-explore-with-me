@@ -73,10 +73,11 @@ public class CommentUserController {
      */
     @GetMapping("/event/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CommentForView> getAllCommentEvent(@PathVariable Long eventId,
+    public List<CommentForView> getAllCommentEvent(@PathVariable @PositiveOrZero @NotNull Long eventId,
                                                    @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                    @RequestParam(defaultValue = "10") @Positive int size) {
-        log.info("GET /comment/event/{eventId}from={from}size={size} ");
+        log.info("Получение списка комментариев к событию с ID = {}\t" +
+                "GET /comments/event/{}from={}size={}", eventId, eventId, from, size);
         return commentService.getCommentsForEvent(eventId, from, size);
     }
 }

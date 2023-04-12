@@ -20,6 +20,9 @@ Template repository for ExploreWithMe project.
 
 Удаление комментария с ID = {} администратором.
         Delete      /admin/comments/{comId}
+
+Получение списка комментариев к событию с ID = {}
+        GET         /comments/event/{eventId}from={from}size={size}
 ```
 
 
