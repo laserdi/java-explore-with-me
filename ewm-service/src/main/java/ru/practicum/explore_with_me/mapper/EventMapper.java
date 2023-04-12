@@ -18,8 +18,8 @@ public interface EventMapper {
 
     Event mapFromNewToModel(NewEventDto newEventDto);
 
-    @Mapping(source = "integer", target = "views")
-    @Mapping(source = "confRequests", target = "confirmedRequests")
+    @Mapping(target = "views", source = "integer")
+    @Mapping(target = "confirmedRequests", source = "confRequests")
     EventFullDto mapFromModelToFullDtoWhenCreate(Event event, int confRequests, int integer);
 
     EventFullDto mapFromModelToFullDto(Event event);

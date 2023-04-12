@@ -93,9 +93,10 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Получение DTO-пользователя из БД.
+     * Вернуть DTO-пользователя из БД или сгенерировать исключение.
+     * @exception NotFoundRecordInBD пользователь не найден в БД.
      * @param userId  ID пользователя.
-     * @param message сообщение для исключения, которое должно содержать поле с ID.
+     * @param message сообщение для исключения.
      * @return DTO найденного пользователя.
      */
     @Override

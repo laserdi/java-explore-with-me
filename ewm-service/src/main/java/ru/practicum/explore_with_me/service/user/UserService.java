@@ -1,6 +1,7 @@
 package ru.practicum.explore_with_me.service.user;
 
 import ru.practicum.explore_with_me.dto.user.UserDto;
+import ru.practicum.explore_with_me.handler.exceptions.NotFoundRecordInBD;
 import ru.practicum.explore_with_me.model.User;
 
 import java.util.List;
@@ -8,8 +9,8 @@ import java.util.List;
 public interface UserService {
     /**
      * Получить список всех пользователей.
-     * @param from
-     * @param size
+     * @param from количество пользователей, которые нужно пропустить для формирования текущего набора.
+     * @param size количество пользователей в наборе.
      * @return список пользователей.
      */
     List<UserDto> findByIds(List<Long> ids, int from, int size);
@@ -30,7 +31,8 @@ public interface UserService {
     void delete(Long userId);
 
     /**
-     * Проверка наличия пользователя в БД.
+     * Вернуть DTO-пользователя из БД или сгенерировать исключение.
+     * @exception NotFoundRecordInBD пользователь не найден в БД.
      * @param userId  ID пользователя.
      * @param message сообщение для исключения.
      * @return DTO найденного пользователя.
