@@ -14,6 +14,7 @@ import ru.practicum.explore_with_me.validation.UpdateObject;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -69,7 +70,13 @@ public class CommentUserController {
 
     /**
      * Получение списка заявок к событию с ID = {}.
-     *
      */
-//    @GetMapping()
+    @GetMapping("/event/{eventId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CommentForView> getAllCommentEvent(@PathVariable Long eventId,
+                                                   @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                                   @RequestParam(defaultValue = "10") @Positive int size) {
+        log.info("GET /comment/event/{eventId}from={from}size={size} ");
+        return commentService.getCommentsForEvent(eventId, from, size);
+    }
 }
