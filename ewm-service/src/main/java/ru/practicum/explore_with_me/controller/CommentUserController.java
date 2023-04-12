@@ -9,31 +9,61 @@ import ru.practicum.explore_with_me.dto.comment.CommentForView;
 import ru.practicum.explore_with_me.dto.comment.CommentUserDto;
 import ru.practicum.explore_with_me.service.comment.CommentService;
 import ru.practicum.explore_with_me.validation.CreateObject;
+import ru.practicum.explore_with_me.validation.UpdateObject;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/user/{userId}/comments/")
+@RequestMapping("/comments")
 @Validated
 public class CommentUserController {
     private final CommentService commentService;
 
-    @PostMapping
+    @PostMapping("/user/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentForView addCommentByUser(@PathVariable("userId") @Positive Long userId,
+    public CommentForView addCommentByUser(@PathVariable("userId") @Positive @NotNull Long userId,
                                            @Validated(CreateObject.class) @RequestBody CommentUserDto commentUserDto) {
-        log.info("Создание комментария пользователем с ID = {} к событию с ID = {}.",
-                userId, commentUserDto.getEventId());
+        log.info("Создание комментария пользователем с ID = {} к событию с ID = {}.\t" +
+                        "Post /comments/user/{}",
+                userId, commentUserDto.getEventId(), userId);
         return commentService.addComment(userId, commentUserDto);
     }
 
-    @GetMapping("/{comId}")
+    @GetMapping("/{comId}/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public CommentForView getByIdForUser(@PathVariable("userId") @Positive Long userId,
                                          @PathVariable("comId") @Positive Long commId) {
-        log.info("Получение комментария с ID  = {} пользователем с ID = {}.", commId, userId);
+        log.info("Получение комментария с ID  = {} пользователем с ID = {}.\t" +
+                "Get /comments/{}/user/{}", commId, userId, commId, userId);
         return commentService.getCommentById(userId, commId);
+    }
+
+    /**
+     * Обновление комментария.
+     * @param comId            ID комментария.
+     * @param userId           ID пользователя, обновляющего комментарий.
+     * @param updateCommentDto обновляемый комментарий.
+     * @return обновлённый комментарий.
+     */
+    @PatchMapping("/{comId}/user/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CommentForView updateComment(@PathVariable @NotNull @PositiveOrZero Long comId,
+                                        @PathVariable @NotNull @PositiveOrZero Long userId,
+                                        @RequestBody @Validated(UpdateObject.class) CommentUserDto updateCommentDto) {
+        log.info("Обновление комментария с ID = {} пользователем с ID = {}.\t" +
+                " Patch /comments/{}/user/{}/ ", comId, userId, comId, userId);
+        return commentService.updateComment(comId, userId, updateCommentDto);
+    }
+
+    @DeleteMapping("/{comId}/users/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteByUser(@PathVariable @NotNull @PositiveOrZero Long comId,
+                             @PathVariable @NotNull @PositiveOrZero Long userId) {
+        log.info("Удаление комментария с ID = {} пользователем с ID = {}.", userId, comId);
+        commentService.deleteCommentByUser(comId, userId);
     }
 }
