@@ -21,6 +21,7 @@ import ru.practicum.explore_with_me.dto.request.ParticipationRequestDto;
 import ru.practicum.explore_with_me.dto.user.UserDto;
 import ru.practicum.explore_with_me.handler.exceptions.*;
 import ru.practicum.explore_with_me.mapper.EventMapper;
+import ru.practicum.explore_with_me.mapper.LocationMapper;
 import ru.practicum.explore_with_me.model.*;
 import ru.practicum.explore_with_me.repository.EventRepository;
 import ru.practicum.explore_with_me.service.category.CategoryService;
@@ -52,6 +53,7 @@ public class EventServiceImpl implements EventService {
     private final UtilService utilService;
     private final WebClientService statsClient;
     private final ParticipationRequestService participationRequestService;
+    private final LocationMapper locationMapper;
     private static final String nameApp = "ewm-service";
 
     /**
@@ -696,7 +698,7 @@ public class EventServiceImpl implements EventService {
             oldEvent.setEventDate(updateEvent.getEventDate());
         }
         if (updateEvent.getLocation() != null) {
-            oldEvent.setLocation(updateEvent.getLocation());
+            oldEvent.setLocation(locationMapper.mapToModel(updateEvent.getLocation()));
         }
         if (updateEvent.getPaid() != null) {
             oldEvent.setPaid(updateEvent.getPaid());
@@ -741,7 +743,7 @@ public class EventServiceImpl implements EventService {
             oldEvent.setEventDate(updateEvent.getEventDate());
         }
         if (updateEvent.getLocation() != null) {
-            oldEvent.setLocation(updateEvent.getLocation());
+            oldEvent.setLocation(locationMapper.mapToModel(updateEvent.getLocation()));
         }
         if (updateEvent.getDescription() != null && !updateEvent.getDescription().isBlank()) {
             oldEvent.setDescription(updateEvent.getDescription());

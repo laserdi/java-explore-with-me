@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.explore_with_me.model.Location;
 import ru.practicum.explore_with_me.validation.CreateObject;
 
 import javax.persistence.Embedded;
@@ -48,7 +47,7 @@ public class NewEventDto {
      * Географические координаты.
      */
     @Embedded       //Здесь внедряются сущности класса Location.
-    private Location location;
+    private LocationDto location;
     /**
      * Нужно ли оплачивать участие?
      */

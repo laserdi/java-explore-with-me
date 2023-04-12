@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.explore_with_me.model.Location;
 import ru.practicum.explore_with_me.model.StateAction;
 
+import javax.persistence.Embedded;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -41,7 +41,8 @@ public class UpdateEventUserRequest {
     /**
      * Новое значение флага о платности мероприятия.
      */
-    private Location location;
+    @Embedded
+    private LocationDto location;
     /**
      * Надо ли оплачивать участие в событии.
      */

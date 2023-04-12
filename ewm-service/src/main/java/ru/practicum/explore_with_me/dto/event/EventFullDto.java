@@ -7,7 +7,6 @@ import lombok.Setter;
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
 import ru.practicum.explore_with_me.dto.user.UserShortDto;
 import ru.practicum.explore_with_me.model.EventState;
-import ru.practicum.explore_with_me.model.Location;
 
 import javax.persistence.Embedded;
 import java.time.LocalDateTime;
@@ -49,7 +48,7 @@ public class EventFullDto {
      * Географические координаты.
      */
     @Embedded       //Здесь внедряются сущности класса Location.
-    private Location location;
+    private LocationDto location;
     /**
      * Нужно ли оплачивать участие?
      */

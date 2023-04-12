@@ -74,34 +74,33 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                     "Нельзя участвовать в неопубликованном событии."
             );
         }
-
-        if (eventFromDb.getParticipantLimit() == 0) {
-            throw new OperationFailedException(
-                    String.format("Нельзя отправить запрос на событие, где отсутствуют ограничения на участие.")
-            );
-        }
+        //Если есть прошлые запросы на участие, то исключение.
         if (participationRequestRepository.countAllByRequester_IdAndEvent_Id(userId, eventId) != 0) {
             throw new OperationFailedException(
                     String.format("Нельзя добавить повторный запрос на участие в событии ID = %d.", eventId));
         }
+        //если есть ограничения,
+        //то проверяем кол-во подтв. запросов на участие.
+        if (eventFromDb.getParticipantLimit() != 0) {
+            //Определяем количество подтверждённых запросов на участие в событии.
+            List<ParticipationRequest> confirmedRequests =
+                    participationRequestRepository.findConfirmedRequests(eventId);
 
-        //Определяем количество подтверждённых запросов на участие в событии.
-        List<ParticipationRequest> confirmedRequests =
-                participationRequestRepository.findConfirmedRequests(eventId);
-
-        if (confirmedRequests.size() == eventFromDb.getParticipantLimit()) {
-            throw new OperationFailedException(
-                    String.format("Нельзя добавить запрос на участие в событии с ID = %d, поскольку достигнут " +
-                            "лимит запросов.", eventId));
+            if (confirmedRequests.size() == eventFromDb.getParticipantLimit()) {
+                throw new OperationFailedException(
+                        String.format("Нельзя добавить запрос на участие в событии с ID = %d, поскольку достигнут " +
+                                "лимит запросов.", eventId));
+            }
         }
-
+        // ограничение на количество участников пройдено.
         ParticipationRequest participationRequest = new ParticipationRequest();
         participationRequest.setRequester(userFromDb);
 
-        if (eventFromDb.getRequestModeration() && eventFromDb.getParticipantLimit() != 0) {
-            //Если требуется модерация и есть ограничение на количество участников...
+        if (eventFromDb.getRequestModeration()) {
+            //Если требуется модерация...
             participationRequest.setStatusRequest(StatusRequest.PENDING);
         } else {
+            //если не требуется модерация.
             participationRequest.setStatusRequest(StatusRequest.CONFIRMED);
         }
 

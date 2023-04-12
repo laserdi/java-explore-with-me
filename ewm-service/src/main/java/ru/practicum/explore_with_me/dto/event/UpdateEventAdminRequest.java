@@ -3,9 +3,9 @@ package ru.practicum.explore_with_me.dto.event;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import ru.practicum.explore_with_me.model.Location;
 import ru.practicum.explore_with_me.model.StateAction;
 
+import javax.persistence.Embedded;
 import java.time.LocalDateTime;
 
 /**
@@ -44,7 +44,8 @@ public class UpdateEventAdminRequest {
     /**
      * Локация.
      */
-    private Location location;
+    @Embedded
+    private LocationDto location;
 
     /**
      * Новое значение флага о платности мероприятия.
