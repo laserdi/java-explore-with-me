@@ -16,12 +16,13 @@ public interface CommentMapper {
 
     @Mapping(target = "event", source = "eventMap")
     @Mapping(target = "user", source = "userMap")
+    @Mapping(target = "id", ignore = true)
     Comment mapToModelFromDto(CommentUserDto commentUserDto, Event eventMap, User userMap);
 
-    CommentUserDto mapToComUserDto(Comment comment);
+//    CommentUserDto mapToComUserDto(Comment comment);
 
-    @Mapping(target = "eventId", source = "event.id")
     @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "eventId", source = "event.id")
     CommentForView mapToView(Comment comment);
 
     List<CommentForView> mapFromModelLisToViewList(List<Comment> comments);

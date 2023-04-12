@@ -66,4 +66,10 @@ public class CommentUserController {
         log.info("Удаление комментария с ID = {} пользователем с ID = {}.", userId, comId);
         commentService.deleteCommentByUser(comId, userId);
     }
+
+    /**
+     * Получение списка заявок к событию с ID = {}.
+     *
+     */
+//    @GetMapping()
 }
