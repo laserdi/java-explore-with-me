@@ -36,7 +36,6 @@ public class EventPrivateController {
      * @param from   количество событий, которые нужно пропустить для формирования текущего набора.
      * @param size   количество событий в наборе.
      * @return список событий пользователя.
-     * ****************************************
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -55,7 +54,6 @@ public class EventPrivateController {
      * @param userId      ID пользователя.
      * @param newEventDto добавляемое событие.
      * @return сохранённое событие.
-     * ****************************************
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -72,7 +70,6 @@ public class EventPrivateController {
      * <p>В случае, если по заданным фильтрам не найдено ни одного события, возвращает пустой список</p>
      * @param userId ID события.
      * @return событие пользователя.
-     * ****************************************
      */
     @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
@@ -90,7 +87,6 @@ public class EventPrivateController {
      * @param userId                 ID пользователя.
      * @param updateEventUserRequest обновляющее событие.
      * @return обновлённое событие.
-     * ****************************************
      */
 
 

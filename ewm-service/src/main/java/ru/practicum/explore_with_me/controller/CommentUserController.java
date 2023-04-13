@@ -36,8 +36,8 @@ public class CommentUserController {
 
     @GetMapping("/{comId}/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public CommentForView getByIdForUser(@PathVariable("userId") @Positive Long userId,
-                                         @PathVariable("comId") @Positive Long commId) {
+    public CommentForView getByIdForUser(@PathVariable("userId") @Positive @NotNull Long userId,
+                                         @PathVariable("comId") @Positive @NotNull Long commId) {
         log.info("Получение комментария с ID  = {} пользователем с ID = {}.\t" +
                 "Get /comments/{}/user/{}", commId, userId, commId, userId);
         return commentService.getCommentById(userId, commId);
@@ -60,7 +60,12 @@ public class CommentUserController {
         return commentService.updateComment(comId, userId, updateCommentDto);
     }
 
-    @DeleteMapping("/{comId}/users/{userId}")
+    /**
+     * Удаление пользователем своего комментария.
+     * @param comId ID комментария.
+     * @param userId ID пользователя.
+     */
+    @DeleteMapping("/{comId}/user/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteByUser(@PathVariable @NotNull @PositiveOrZero Long comId,
                              @PathVariable @NotNull @PositiveOrZero Long userId) {
@@ -77,7 +82,7 @@ public class CommentUserController {
                                                    @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                    @RequestParam(defaultValue = "10") @Positive int size) {
         log.info("Получение списка комментариев к событию с ID = {}\t" +
-                "GET /comments/event/{}from={}size={}", eventId, eventId, from, size);
+                "GET /comments/event/{}?from={}size={}", eventId, eventId, from, size);
         return commentService.getCommentsForEvent(eventId, from, size);
     }
 }

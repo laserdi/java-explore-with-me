@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.dto.comment.CommentForView;
@@ -19,7 +18,6 @@ import ru.practicum.explore_with_me.model.Comment;
 import ru.practicum.explore_with_me.model.Event;
 import ru.practicum.explore_with_me.model.User;
 import ru.practicum.explore_with_me.repository.CommentRepository;
-import ru.practicum.explore_with_me.repository.UserRepository;
 import ru.practicum.explore_with_me.service.event.EventService;
 import ru.practicum.explore_with_me.service.user.UserService;
 
@@ -31,7 +29,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommentServiceImpl implements CommentService {
-    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final EventService eventService;
     private final UserService userService;
@@ -42,6 +39,7 @@ public class CommentServiceImpl implements CommentService {
      * @param userId          ID пользователя.
      * @param inputCommentDto входящий комментарий.
      * @return сохранённый комментарий.
+     * @throws NotFoundRecordInBD в базе данных не найден пользователь или комментарий.
      */
     @Override
     @Transactional
@@ -52,6 +50,7 @@ public class CommentServiceImpl implements CommentService {
                 "При создании комментария пользователем в базе данных не найдено событие с ID = %d.");
         Comment comment = commentMapper.mapToModelFromDto(inputCommentDto, eventFromDb, userFromDb);
         comment.setCreatedOn(LocalDateTime.now());
+        System.out.println("Печать комментария: \t" + comment);
         Comment result = commentRepository.save(comment);
         log.info("Создан комментарий с ID = {} в БД.", result.getId());
         return commentMapper.mapToView(result);
@@ -62,6 +61,7 @@ public class CommentServiceImpl implements CommentService {
      * @param userId ID пользователя.
      * @param comId  ID комментария.
      * @return комментарий.
+     * @throws NotFoundRecordInBD в базе данных не найден пользователь или комментарий.
      */
     @Override
     public CommentForView getCommentById(Long userId, Long comId) {
@@ -78,8 +78,11 @@ public class CommentServiceImpl implements CommentService {
      * Удалить комментарий пользователем.
      * @param comId  ID комментария.
      * @param userId ID пользователя.
+     * @throws OperationFailedException пользователь не является автором комментария.
+     * @throws NotFoundRecordInBD       комментарий не найден в БД.
      */
     @Override
+    @Transactional
     public void deleteCommentByUser(Long comId, Long userId) {
         UserDto userFromDb = userService.check(userId, "При удалении комментария пользователем " +
                 "в базе данных не найден пользователь с ID = %d.");
@@ -87,7 +90,8 @@ public class CommentServiceImpl implements CommentService {
                 "комментарий с ID = %d не найден в БД.");
         if (checkAuthorComment(commentFromDb, userId)) {
             commentRepository.deleteById(comId);
-            log.info("Из БД удалён комментарий с ID = {}", comId);
+            log.info("Из БД пользователем с ID = {} удалён комментарий с ID = {}", userId, comId);
+            return;
         }
         throw new OperationFailedException(String.format("Ошибка удаления комментария. Пользователь с ID = %d " +
                         "не является автором комментария с ID = %d. Его автор с ID = %d",
@@ -100,10 +104,13 @@ public class CommentServiceImpl implements CommentService {
      * @throws NotFoundRecordInBD комментарий не найден в БД.
      */
     @Override
+    @Transactional
     public void deleteCommentByAdmin(Long comId) {
         commentRepository.findById(comId).orElseThrow(() -> new NotFoundRecordInBD(String.format(
                 "При удалении комментария с ID = %d администратором комментарий не найден в БД.", comId)));
+        System.out.println("Найден комментарий перед удалением.");
         commentRepository.deleteById(comId);
+        log.info("Администратором выполнено удаление комментария с ID = {}.", comId);
     }
 
     /**
@@ -137,10 +144,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentForView> getCommentsForEvent(Long eventId, int from, int size) {
         Pageable pageable = PageRequest.of(
-                from == 0 ? 0 : (from / size), size,
-                Sort.by(Sort.Direction.ASC, "created")
-        );
-        List<Comment> comments = commentRepository.getByEvent_Id(eventId, pageable);
+                from == 0 ? 0 : (from / size), size);
+        List<Comment> comments = commentRepository.findAllByEvent_Id(eventId, pageable);
         List<CommentForView> result = commentMapper.mapFromModelLisToViewList(comments);
         log.info("Выдан список комментариев к событию с ID = {}, состоящий из {} комментариев.",
                 eventId, result.size());
