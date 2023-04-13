@@ -189,7 +189,7 @@ public class CommentServiceImpl implements CommentService {
                 "к событию не найдено событиес ID = % в БД.");
         if (!eventFromDb.getEventState().equals(EventState.PUBLISHED)) {
             //проверяем, что юзер - это инициатор события.
-            if (eventFromDb.getInitiator().equals(eventId)) {
+            if (eventFromDb.getInitiator().getId().equals(eventId)) {
                 List<Comment> comments = commentRepository.findAllByEvent_Id(eventId, pageable);
                 List<CommentForView> result = commentMapper.mapFromModelLisToViewList(comments);
                 log.info("Инициатору выдан список комментариев к событию с ID = {}, состоящий из {} комментариев.",
