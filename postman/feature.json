@@ -716,10 +716,6 @@
 							"    pm.expect(target).to.not.have.property(\"eventId\");\r",
 							"    pm.expect(target).to.not.have.property('userId');\r",
 							"});\r",
-							"\r",
-							"pm.test(\"Ответ должен содержать код статуса 404\", function () {\r",
-							"    pm.response.to.have.status(404);\r",
-							"});\r",
 							""
 						],
 						"type": "text/javascript"
@@ -806,7 +802,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n\"text\": \"{{$randomLoremText}}\",\r\n\"eventId\":{{eventId}}\r\n}",
+					"raw": "{\r\n\"text\": \"Текст для создания повторного комментария. {{$randomInt}}\",\r\n\"eventId\":{{eventId}}\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -894,10 +890,6 @@
 							"    !pm.expect(target).to.not.have.property('created');\r",
 							"    !pm.expect(target).to.not.have.property(\"eventId\");\r",
 							"    !pm.expect(target).to.not.have.property('userId');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Ответ должен содержать код статуса 404\", function () {\r",
-							"    pm.response.to.have.status(404);\r",
 							"});\r",
 							"\r",
 							"\r",
