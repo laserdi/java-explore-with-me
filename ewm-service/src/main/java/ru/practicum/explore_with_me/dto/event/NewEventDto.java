@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.explore_with_me.validation.CreateObject;
 
-import javax.persistence.Embedded;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -46,7 +45,6 @@ public class NewEventDto {
     /**
      * Географические координаты.
      */
-    @Embedded       //Здесь внедряются сущности класса Location.
     private LocationDto location;
     /**
      * Нужно ли оплачивать участие?

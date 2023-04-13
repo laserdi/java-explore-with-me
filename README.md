@@ -1,6 +1,7 @@
 # java-explore-with-me
 Template repository for ExploreWithMe project.
 
+ссылка на Pull Request: [https://github.com/laserdi/java-explore-with-me/pull/5](https://github.com/laserdi/java-explore-with-me/pull/5)
 ### Краткое описание дополнительного функционала:
 
 #### Пользовательский API работы с комментариями:

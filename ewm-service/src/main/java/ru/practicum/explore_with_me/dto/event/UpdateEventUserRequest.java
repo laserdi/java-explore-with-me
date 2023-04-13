@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.explore_with_me.model.StateAction;
 
-import javax.persistence.Embedded;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -41,7 +40,6 @@ public class UpdateEventUserRequest {
     /**
      * Новое значение флага о платности мероприятия.
      */
-    @Embedded
     private LocationDto location;
     /**
      * Надо ли оплачивать участие в событии.
