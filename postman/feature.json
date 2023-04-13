@@ -470,7 +470,7 @@
 					"script": {
 						"exec": [
 							"let serverResponse = pm.response; // получаем объект Response и сохраняем его в переменную serverResponse\r",
-							"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {\r",
+							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {\r",
 							"    pm.response.to.have.status(200);  \r",
 							"    pm.response.to.be.withBody;\r",
 							"    pm.response.to.be.json;\r",
@@ -480,16 +480,8 @@
 							"//pm.expect(body).is.an('array'); // проверяем, что тело ответа является массивом \r",
 							"const target = pm.response.json();\r",
 							"\r",
-							"pm.test(\"Комментарий должен содержать поля: id, text, created, eventId, userId\", function (){\r",
-							"    pm.expect(target[0]).to.have.property('id');\r",
-							"    pm.expect(target[0]).to.have.property('text');\r",
-							"    pm.expect(target[0]).to.have.property('created');\r",
-							"    pm.expect(target[0]).to.have.property(\"eventId\");\r",
-							"    pm.expect(target[0]).to.have.property('userId');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Должен быть найден только один коментарий у заданного события\", function () {\r",
-							"    pm.expect(target.length).to.eql(1);\r",
+							"pm.test(\"Должен быть не найден ни один коментарий у заданного события\", function () {\r",
+							"    pm.expect(target.length).to.eql(0);\r",
 							"});\r",
 							""
 						],

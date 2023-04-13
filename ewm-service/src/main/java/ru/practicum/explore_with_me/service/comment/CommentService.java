@@ -61,4 +61,9 @@ public interface CommentService {
      * @throws NotFoundRecordInBD комментарий не найден в БД.
      */
     Comment getCommentOrThrow(Long comId, String message);
+
+    /**
+     * Получить количество комментариев к событию.
+     */
+    Integer getCountCommentsForEvent(Long eventId);
 }

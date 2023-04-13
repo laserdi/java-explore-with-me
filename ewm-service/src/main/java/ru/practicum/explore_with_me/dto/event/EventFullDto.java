@@ -79,4 +79,5 @@ public class EventFullDto {
      * Поле не сохраняем в БД. Оно потом вычисляется.
      */
     private Integer views;
+    private Integer comments;
 }

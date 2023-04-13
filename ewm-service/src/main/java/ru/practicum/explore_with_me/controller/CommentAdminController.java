@@ -7,7 +7,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.service.comment.CommentService;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
@@ -24,7 +23,7 @@ public class CommentAdminController {
      */
     @DeleteMapping("/{comId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteByAdmin(@PathVariable @NotNull @PositiveOrZero Long comId) {
+    public void deleteByAdmin(@PathVariable @PositiveOrZero Long comId) {
         log.info("Удаление комментария с ID = {} администратором. " +
                 "DELETE /admin/comments/{}", comId, comId);
         commentService.deleteCommentByAdmin(comId);

@@ -26,7 +26,7 @@ public class CommentUserController {
 
     @PostMapping("/user/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentForView addCommentByUser(@PathVariable("userId") @Positive @NotNull Long userId,
+    public CommentForView addCommentByUser(@PathVariable("userId") @Positive Long userId,
                                            @Validated(CreateObject.class) @RequestBody CommentUserDto commentUserDto) {
         log.info("Создание комментария пользователем с ID = {} к событию с ID = {}.\t" +
                         "Post /comments/user/{}",
@@ -36,8 +36,8 @@ public class CommentUserController {
 
     @GetMapping("/{comId}/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public CommentForView getByIdForUser(@PathVariable("userId") @Positive @NotNull Long userId,
-                                         @PathVariable("comId") @Positive @NotNull Long commId) {
+    public CommentForView getByIdForUser(@PathVariable("userId") @Positive Long userId,
+                                         @PathVariable("comId") @Positive Long commId) {
         log.info("Получение комментария с ID  = {} пользователем с ID = {}.\t" +
                 "Get /comments/{}/user/{}", commId, userId, commId, userId);
         return commentService.getCommentById(userId, commId);
@@ -52,8 +52,8 @@ public class CommentUserController {
      */
     @PatchMapping("/{comId}/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public CommentForView updateComment(@PathVariable @NotNull @PositiveOrZero Long comId,
-                                        @PathVariable @NotNull @PositiveOrZero Long userId,
+    public CommentForView updateComment(@PathVariable @PositiveOrZero Long comId,
+                                        @PathVariable @PositiveOrZero Long userId,
                                         @RequestBody @Validated(UpdateObject.class) CommentUserDto updateCommentDto) {
         log.info("Обновление комментария с ID = {} пользователем с ID = {}.\t" +
                 " Patch /comments/{}/user/{}/ ", comId, userId, comId, userId);
@@ -67,8 +67,8 @@ public class CommentUserController {
      */
     @DeleteMapping("/{comId}/user/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteByUser(@PathVariable @NotNull @PositiveOrZero Long comId,
-                             @PathVariable @NotNull @PositiveOrZero Long userId) {
+    public void deleteByUser(@PathVariable @PositiveOrZero Long comId,
+                             @PathVariable @PositiveOrZero Long userId) {
         log.info("Удаление комментария с ID = {} пользователем с ID = {}.", userId, comId);
         commentService.deleteCommentByUser(comId, userId);
     }

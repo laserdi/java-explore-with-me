@@ -16,12 +16,14 @@ import ru.practicum.explore_with_me.handler.exceptions.WrongFieldValueException;
 import ru.practicum.explore_with_me.mapper.CommentMapper;
 import ru.practicum.explore_with_me.model.Comment;
 import ru.practicum.explore_with_me.model.Event;
+import ru.practicum.explore_with_me.model.EventState;
 import ru.practicum.explore_with_me.model.User;
 import ru.practicum.explore_with_me.repository.CommentRepository;
 import ru.practicum.explore_with_me.service.event.EventService;
 import ru.practicum.explore_with_me.service.user.UserService;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -48,11 +50,24 @@ public class CommentServiceImpl implements CommentService {
                 "в базе данных не найден пользователь с ID = %d.");
         Event eventFromDb = eventService.getEventOrThrow(inputCommentDto.getEventId(),
                 "При создании комментария пользователем в базе данных не найдено событие с ID = %d.");
+        //Проверяем опубликовано ли событие
+        if (!eventFromDb.getEventState().equals(EventState.PUBLISHED)) {
+            if (eventFromDb.getInitiator().getId().equals(userId)) {
+                Comment comment = commentMapper.mapToModelFromDto(inputCommentDto, eventFromDb, userFromDb);
+                comment.setCreatedOn(LocalDateTime.now());
+                Comment result = commentRepository.save(comment);
+                log.info("Инициатором события создан комментарий с ID = {} в БД.", result.getId());
+            } else {
+                log.info("Пользователь пытается сделать комментарий неопубликованного события.");
+                throw new OperationFailedException("Пользователь пытается сделать комментарий " +
+                        "неопубликованного события.");
+            }
+        }
+        //Событие опубликовано.
         Comment comment = commentMapper.mapToModelFromDto(inputCommentDto, eventFromDb, userFromDb);
         comment.setCreatedOn(LocalDateTime.now());
-        System.out.println("Печать комментария: \t" + comment);
         Comment result = commentRepository.save(comment);
-        log.info("Создан комментарий с ID = {} в БД.", result.getId());
+        log.info("Обычныс пользователем создан комментарий с ID = {} в БД.", result.getId());
         return commentMapper.mapToView(result);
     }
 
@@ -69,6 +84,24 @@ public class CommentServiceImpl implements CommentService {
                 "в базе данных не найден пользователь с ID = %d.");
         Comment commentFromDb = getCommentOrThrow(comId, "При получении комментария пользователем " +
                 "по ID = %d этот комментарий не найден в БД.");
+        Event eventFromDb = eventService.getEventOrThrow(commentFromDb.getEvent().getId(),
+                "Не найдено событие %d при получении комментария к нему.");
+        //Проверяем опубликовано ли событие
+        if (!eventFromDb.getEventState().equals(EventState.PUBLISHED)) {
+            //Событие не опубликовано.
+            if (eventFromDb.getInitiator().getId().equals(userId)) {
+                //Инициатор события.
+                CommentForView result = commentMapper.mapToView(commentFromDb);
+                log.info("Отправлен результат запроса комментария по ID = {}", comId);
+                return result;
+            } else {
+                //Не инициатор события.
+                log.info("Пользователь пытается получить комментарий неопубликованного события.");
+                throw new OperationFailedException("Пользователь пытается сделать комментарий " +
+                        "неопубликованного события.");
+            }
+        }
+        //Событие опубликовано.
         CommentForView result = commentMapper.mapToView(commentFromDb);
         log.info("Отправлен результат запроса комментария по ID = {}", comId);
         return result;
@@ -127,8 +160,15 @@ public class CommentServiceImpl implements CommentService {
                 "в базе данных не найден пользователь с ID = %d.");
         Comment commentFromDb = getCommentOrThrow(comId, "При получении комментария пользователем " +
                 "комментарий с ID = %d не найден в БД.");
+
         checkAuthorCommentOrThrow(userId, commentFromDb);
 
+        //Проверяем время публикации комментария.
+        if (commentFromDb.getCreatedOn().isBefore(LocalDateTime.now().minusHours(2))) {
+            //Если прошло более 2 часов после создания комментария, то редактировать его уже нельзя.
+            throw new OperationFailedException("Прошло более 2 часов после создания " +
+                    "комментария, редактировать его уже нельзя.");
+        }
         Comment comment = updateFieldsByUser(inputCommentDto, commentFromDb);
         Comment result = commentRepository.save(comment);
 
@@ -145,10 +185,28 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentForView> getCommentsForEvent(Long eventId, int from, int size) {
         Pageable pageable = PageRequest.of(
                 from == 0 ? 0 : (from / size), size);
+        Event eventFromDb = eventService.getEventOrThrow(eventId, "При получении списка комментариев " +
+                "к событию не найдено событиес ID = % в БД.");
+        if (!eventFromDb.getEventState().equals(EventState.PUBLISHED)) {
+            //проверяем, что юзер - это инициатор события.
+            if (eventFromDb.getInitiator().equals(eventId)) {
+                List<Comment> comments = commentRepository.findAllByEvent_Id(eventId, pageable);
+                List<CommentForView> result = commentMapper.mapFromModelLisToViewList(comments);
+                log.info("Инициатору выдан список комментариев к событию с ID = {}, состоящий из {} комментариев.",
+                        eventId, result.size());
+                return result;
+            } else {
+                //Значит юзер не инициатор.
+                log.info("Выдан пустой список комментариев к событию с ID = {}, поскольку событие не опубликовано.",
+                        eventId);
+                return Collections.emptyList();
+            }
+        }
+        //Событие публичное.
         List<Comment> comments = commentRepository.findAllByEvent_Id(eventId, pageable);
         List<CommentForView> result = commentMapper.mapFromModelLisToViewList(comments);
-        log.info("Выдан список комментариев к событию с ID = {}, состоящий из {} комментариев.",
-                eventId, result.size());
+        log.info("Обычному полбзователю выдан список комментариев к событию с ID = {}, " +
+                "состоящий из {} комментариев.", eventId, result.size());
         return result;
     }
 
@@ -170,16 +228,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     /**
-     * Метод обновления полей комментария с генерацией исключения, если нового текста нет.
+     * Метод обновления полей комментария.
      * @param newComment новый комментарий.
      * @param oldComment старый комментарий.
      * @return обновлённый комментарий.
      * @throws WrongFieldValueException не передан текст для обновления.
      */
     private Comment updateFieldsByUser(CommentUserDto newComment, Comment oldComment) {
-        if (newComment.getText() == null || newComment.getText().isBlank()) {
-            throw new WrongFieldValueException("При изменении комментария не передан его текст.");
-        }
         String text = newComment.getText();
         return oldComment.toBuilder()
                 .text(text)
@@ -209,5 +264,13 @@ public class CommentServiceImpl implements CommentService {
                             " комментария с ID = %d. Настоящий автор с ID = %d",
                     comment.getId(), userId, comment.getUser().getId()));
         }
+    }
+
+    /**
+     * Получить количество комментариев к событию.
+     */
+    @Override
+    public Integer getCountCommentsForEvent(Long eventId) {
+        return commentRepository.countCommentsForEvent(eventId);
     }
 }
