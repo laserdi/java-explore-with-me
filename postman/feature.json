@@ -814,7 +814,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "1"
+							"value": "{{userId}}"
 						}
 					]
 				}
