@@ -1,5 +1,6 @@
 package ru.practicum.explore_with_me.service.comment;
 
+import ru.practicum.explore_with_me.dto.comment.CommentEvent;
 import ru.practicum.explore_with_me.dto.comment.CommentForView;
 import ru.practicum.explore_with_me.dto.comment.CommentUserDto;
 import ru.practicum.explore_with_me.handler.exceptions.NotFoundRecordInBD;
@@ -65,5 +66,7 @@ public interface CommentService {
     /**
      * Получить количество комментариев к событию.
      */
-    Integer getCountCommentsForEvent(Long eventId);
+    Long getCountCommentsForEvent(Long eventId);
+
+    List<CommentEvent> checkFunction(Long eventId);
 }

@@ -1,10 +1,10 @@
-drop table if exists categories cascade;
-drop table if exists users cascade;
-drop table if exists events cascade;
-drop table if exists requests cascade;
-drop table if exists compilations cascade;
-drop table if exists compilations_events cascade;
-drop table if exists comments cascade;
+-- drop table if exists categories cascade;
+-- drop table if exists users cascade;
+-- drop table if exists events cascade;
+-- drop table if exists requests cascade;
+-- drop table if exists compilations cascade;
+-- drop table if exists compilations_events cascade;
+-- drop table if exists comments cascade;
 
 create table if not exists categories
 (

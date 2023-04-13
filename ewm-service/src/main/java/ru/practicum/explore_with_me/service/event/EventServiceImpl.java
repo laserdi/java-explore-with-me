@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.WebClientService;
 import ru.practicum.explore_with_me.dto.StatsDtoForView;
+import ru.practicum.explore_with_me.dto.comment.CommentEvent;
 import ru.practicum.explore_with_me.dto.event.*;
 import ru.practicum.explore_with_me.dto.filter.EventFilter;
 import ru.practicum.explore_with_me.dto.request.EventRequestStatusUpdateRequest;
@@ -39,6 +40,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toMap;
 import static ru.practicum.explore_with_me.model.QEvent.event;
 
 @Slf4j
@@ -69,6 +71,17 @@ public class EventServiceImpl implements EventService {
 
         Predicate predicate = event.initiator.id.ne(userId);
         List<Event> events = eventRepository.findAll(predicate, pageable).toList();
+        //Ищем комментарии к событиям, предварительно, найдя список ID для поиска.
+        List<Long> eventIds = events.stream().map(Event::getId).collect(Collectors.toList());
+        List<CommentEvent> commentsCount = commentRepository.getCommentsEvents(eventIds);
+        List<EventShortDto> resultTest = new ArrayList<>();
+
+        Map<Long, Long> commentsMap = commentsCount.stream()
+                .collect(toMap(CommentEvent::getEventId, CommentEvent::getCommentCount));
+
+        for (Event eve : events) {
+            eve.setComments(commentsMap.getOrDefault(eve.getId(), 0L));
+        }
 
         List<EventShortDto> result = events.stream()
                 .map(eventMapper::mapToShortDto).collect(Collectors.toList());

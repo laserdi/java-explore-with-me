@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explore_with_me.dto.comment.CommentEvent;
 import ru.practicum.explore_with_me.dto.comment.CommentForView;
 import ru.practicum.explore_with_me.dto.comment.CommentUserDto;
 import ru.practicum.explore_with_me.dto.user.UserDto;
@@ -271,7 +272,13 @@ public class CommentServiceImpl implements CommentService {
      * Получить количество комментариев к событию.
      */
     @Override
-    public Integer getCountCommentsForEvent(Long eventId) {
+    public Long getCountCommentsForEvent(Long eventId) {
         return commentRepository.countCommentsForEvent(eventId);
     }
+
+    @Override
+    public List<CommentEvent> checkFunction(Long eventId) {
+        return commentRepository.getCommentsEvents(List.of(eventId));
+    }
+
 }

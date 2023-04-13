@@ -121,5 +121,5 @@ public class Event {
     private Integer views;
 
     @Transient
-    private Integer comments;
+    private Long comments;
 }
