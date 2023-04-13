@@ -11,7 +11,6 @@ import ru.practicum.explore_with_me.service.comment.CommentService;
 import ru.practicum.explore_with_me.validation.CreateObject;
 import ru.practicum.explore_with_me.validation.UpdateObject;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -78,7 +77,7 @@ public class CommentUserController {
      */
     @GetMapping("/event/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CommentForView> getAllCommentEvent(@PathVariable @PositiveOrZero @NotNull Long eventId,
+    public List<CommentForView> getAllCommentEvent(@PathVariable @PositiveOrZero Long eventId,
                                                    @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                    @RequestParam(defaultValue = "10") @Positive int size) {
         log.info("Получение списка комментариев к событию с ID = {}\t" +
