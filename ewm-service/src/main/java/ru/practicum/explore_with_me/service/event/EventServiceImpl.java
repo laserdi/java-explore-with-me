@@ -74,7 +74,6 @@ public class EventServiceImpl implements EventService {
         //Ищем комментарии к событиям, предварительно, найдя список ID для поиска.
         List<Long> eventIds = events.stream().map(Event::getId).collect(Collectors.toList());
         List<CommentEvent> commentsCount = commentRepository.getCommentsEvents(eventIds);
-        List<EventShortDto> resultTest = new ArrayList<>();
 
         Map<Long, Long> commentsMap = commentsCount.stream()
                 .collect(toMap(CommentEvent::getEventId, CommentEvent::getCommentCount));
