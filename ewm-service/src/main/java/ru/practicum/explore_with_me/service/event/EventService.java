@@ -162,4 +162,6 @@ public interface EventService {
      * @param eventId ID события.
      */
     EventFullDto publish(Long eventId);
-}
+
+
+    }

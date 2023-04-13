@@ -8,7 +8,7 @@ import ru.practicum.explore_with_me.dto.category.CategoryDto;
 import ru.practicum.explore_with_me.dto.user.UserShortDto;
 import ru.practicum.explore_with_me.model.EventState;
 
-import javax.persistence.Embedded;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -47,7 +47,7 @@ public class EventFullDto {
     /**
      * Географические координаты.
      */
-    @Embedded       //Здесь внедряются сущности класса Location.
+    @NotNull
     private LocationDto location;
     /**
      * Нужно ли оплачивать участие?
@@ -79,4 +79,5 @@ public class EventFullDto {
      * Поле не сохраняем в БД. Оно потом вычисляется.
      */
     private Integer views;
+    private Long comments;
 }

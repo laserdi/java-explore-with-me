@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import ru.practicum.explore_with_me.model.StateAction;
 
-import javax.persistence.Embedded;
 import java.time.LocalDateTime;
 
 /**
@@ -44,7 +43,6 @@ public class UpdateEventAdminRequest {
     /**
      * Локация.
      */
-    @Embedded
     private LocationDto location;
 
     /**

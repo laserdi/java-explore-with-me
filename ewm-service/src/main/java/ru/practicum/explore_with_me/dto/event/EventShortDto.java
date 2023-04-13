@@ -63,5 +63,5 @@ public class EventShortDto {
      * Поле не сохраняем в БД. Оно потом вычисляется.
      */
     private Integer views;
-
+    private Long comments;
 }

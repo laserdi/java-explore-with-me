@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.WebClientService;
 import ru.practicum.explore_with_me.dto.StatsDtoForView;
+import ru.practicum.explore_with_me.dto.comment.CommentEvent;
 import ru.practicum.explore_with_me.dto.event.*;
 import ru.practicum.explore_with_me.dto.filter.EventFilter;
 import ru.practicum.explore_with_me.dto.request.EventRequestStatusUpdateRequest;
@@ -23,6 +24,7 @@ import ru.practicum.explore_with_me.handler.exceptions.*;
 import ru.practicum.explore_with_me.mapper.EventMapper;
 import ru.practicum.explore_with_me.mapper.LocationMapper;
 import ru.practicum.explore_with_me.model.*;
+import ru.practicum.explore_with_me.repository.CommentRepository;
 import ru.practicum.explore_with_me.repository.EventRepository;
 import ru.practicum.explore_with_me.service.category.CategoryService;
 import ru.practicum.explore_with_me.service.request.ParticipationRequestService;
@@ -38,6 +40,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toMap;
 import static ru.practicum.explore_with_me.model.QEvent.event;
 
 @Slf4j
@@ -54,6 +57,7 @@ public class EventServiceImpl implements EventService {
     private final WebClientService statsClient;
     private final ParticipationRequestService participationRequestService;
     private final LocationMapper locationMapper;
+    private final CommentRepository commentRepository;
     private static final String nameApp = "ewm-service";
 
     /**
@@ -66,8 +70,20 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(from, size, Sort.by("id").ascending());
 
         Predicate predicate = event.initiator.id.ne(userId);
-        List<EventShortDto> result = eventRepository.findAll(predicate, pageable)
-                .stream().map(eventMapper::mapToShortDto).collect(Collectors.toList());
+        List<Event> events = eventRepository.findAll(predicate, pageable).toList();
+        //Ищем комментарии к событиям, предварительно, найдя список ID для поиска.
+        List<Long> eventIds = events.stream().map(Event::getId).collect(Collectors.toList());
+        List<CommentEvent> commentsCount = commentRepository.getCommentsEvents(eventIds);
+
+        Map<Long, Long> commentsMap = commentsCount.stream()
+                .collect(toMap(CommentEvent::getEventId, CommentEvent::getCommentCount));
+
+        for (Event eve : events) {
+            eve.setComments(commentsMap.getOrDefault(eve.getId(), 0L));
+        }
+
+        List<EventShortDto> result = events.stream()
+                .map(eventMapper::mapToShortDto).collect(Collectors.toList());
         log.info("Выдан результат запроса о своих событиях ({} событий), для пользователя с ID = {} и name = {}.",
                 result.size(), userFromDb.getId(), userFromDb.getName());
         return result;
@@ -338,6 +354,7 @@ public class EventServiceImpl implements EventService {
         //Заполняем количество просмотров для списка событий.
         events = utilService.fillConfirmedRequests(events, confirmedRequests);
         Event result = events.get(0);
+        result.setComments(commentRepository.countCommentsForEvent(eventId));
         log.info("Выполнено обновление события с ID = {}.", eventId);
         return eventMapper.mapFromModelToFullDto(result);
     }
@@ -375,6 +392,7 @@ public class EventServiceImpl implements EventService {
         Event result = events.get(0);
         statsClient.save(nameApp, httpServletRequest.getRequestURI(),
                 httpServletRequest.getRemoteAddr(), LocalDateTime.now());
+        result.setComments(commentRepository.countCommentsForEvent(result.getId()));
         log.info("Отправлен ответ на запрос события по ID = {} в общедоступном режиме ", eventId);
         return eventMapper.mapFromModelToFullDto(result);
     }
@@ -412,6 +430,7 @@ public class EventServiceImpl implements EventService {
         //Заполняем количество просмотров для списка событий.
         events = utilService.fillConfirmedRequests(events, confirmedRequests);
         Event result = events.get(0);
+        result.setComments(commentRepository.countCommentsForEvent(result.getId()));
         log.info("Отправлен ответ на запрос собственного события по ID = {} в приватном режиме ", eventId);
         return eventMapper.mapFromModelToFullDto(result);
     }
@@ -446,6 +465,7 @@ public class EventServiceImpl implements EventService {
         //Заполняем количество просмотров для списка событий.
         events = utilService.fillConfirmedRequests(events, confirmedRequests);
         Event result = events.get(0);
+        result.setComments(commentRepository.countCommentsForEvent(result.getId()));
         log.info("Отправлен ответ на запрос об отмене события с ID = {} пользователем с ID = {}.", eventId, userId);
         return eventMapper.mapFromModelToFullDto(result);
     }
@@ -498,6 +518,7 @@ public class EventServiceImpl implements EventService {
         //Заполняем количество просмотров для списка событий.
         events = utilService.fillConfirmedRequests(events, confirmedRequests);
         Event result = events.get(0);
+        result.setComments(commentRepository.countCommentsForEvent(result.getId()));
         log.info("Выполнено обновление события с ID = {}.", eventId);
 
         return eventMapper.mapFromModelToFullDto(result);
@@ -546,6 +567,7 @@ public class EventServiceImpl implements EventService {
         eventFromDb.setPublishedOn(LocalDateTime.now());
         Event saved = eventRepository.save(eventFromDb);
         log.info("Опубликовано событие с ID = {}.", eventId);
+        saved.setComments(commentRepository.countCommentsForEvent(saved.getId()));
 
         return eventMapper.mapFromModelToFullDto(saved);
     }
@@ -803,5 +825,4 @@ public class EventServiceImpl implements EventService {
         events = utilService.fillConfirmedRequests(events, confirmedRequests);
         return events;
     }
-
 }

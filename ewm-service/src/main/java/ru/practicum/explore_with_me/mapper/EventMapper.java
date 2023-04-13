@@ -2,6 +2,7 @@ package ru.practicum.explore_with_me.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import ru.practicum.explore_with_me.dto.comment.CommentEvent;
 import ru.practicum.explore_with_me.dto.event.EventFullDto;
 import ru.practicum.explore_with_me.dto.event.EventShortDto;
 import ru.practicum.explore_with_me.dto.event.NewEventDto;
@@ -16,10 +17,13 @@ public interface EventMapper {
 
     EventShortDto mapToShortDto(Event event);
 
+    @Mapping(target = "comments", source = "commentEvent.commentCount")
+    EventShortDto mapEoShortDtoWithCounComments(Event event, CommentEvent commentEvent);
+
     Event mapFromNewToModel(NewEventDto newEventDto);
 
-    @Mapping(source = "integer", target = "views")
-    @Mapping(source = "confRequests", target = "confirmedRequests")
+    @Mapping(target = "views", source = "integer")
+    @Mapping(target = "confirmedRequests", source = "confRequests")
     EventFullDto mapFromModelToFullDtoWhenCreate(Event event, int confRequests, int integer);
 
     EventFullDto mapFromModelToFullDto(Event event);

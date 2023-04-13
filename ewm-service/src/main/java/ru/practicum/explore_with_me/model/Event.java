@@ -119,4 +119,7 @@ public class Event {
      */
     @Transient  //Поле не сохраняем в БД. Оно потом вычисляется.
     private Integer views;
+
+    @Transient
+    private Long comments;
 }
