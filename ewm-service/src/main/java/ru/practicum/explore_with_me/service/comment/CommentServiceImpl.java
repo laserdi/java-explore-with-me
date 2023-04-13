@@ -57,6 +57,7 @@ public class CommentServiceImpl implements CommentService {
                 comment.setCreatedOn(LocalDateTime.now());
                 Comment result = commentRepository.save(comment);
                 log.info("Инициатором события создан комментарий с ID = {} в БД.", result.getId());
+                return commentMapper.mapToView(result);
             } else {
                 log.info("Пользователь пытается сделать комментарий неопубликованного события.");
                 throw new OperationFailedException("Пользователь пытается сделать комментарий " +
