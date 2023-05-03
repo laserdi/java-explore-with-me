@@ -18,7 +18,7 @@ public interface EventMapper {
     EventShortDto mapToShortDto(Event event);
 
     @Mapping(target = "comments", source = "commentEvent.commentCount")
-    EventShortDto mapEoShortDtoWithCounComments(Event event, CommentEvent commentEvent);
+    EventShortDto mapToShortDtoWithCounComments(Event event, CommentEvent commentEvent);
 
     Event mapFromNewToModel(NewEventDto newEventDto);
 

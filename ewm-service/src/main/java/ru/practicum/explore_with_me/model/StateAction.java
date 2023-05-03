@@ -10,5 +10,5 @@ public enum StateAction {
     /**
      * Отменено после
      */
-    CANCEL_REVIEW;
+    CANCEL_REVIEW
 }

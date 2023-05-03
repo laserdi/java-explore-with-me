@@ -34,7 +34,6 @@ import ru.practicum.explore_with_me.util.UtilService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -446,7 +445,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundRecordInBD(String.format("При отмене события с ID = %d " +
                         "пользователем с ID = %d событие не найдено.", eventId, userId)));
         if (event.getEventState() != EventState.PENDING)
-            throw new FoundConflictInDB("Отменить можно только опубликованное событие.");
+            throw new FoundConflictInDB("Отменить можно только не опубликованное событие.");
 
         event.setEventState(EventState.CANCELED);
         event = eventRepository.save(event);
@@ -483,7 +482,7 @@ public class EventServiceImpl implements EventService {
                 "При обновлении события не найден пользователь ID = {}.");
         Event eventFromDb = getEventOrThrow(eventId, "При обновлении в приватном режиме события с ID = %d " +
                 "пользователем с ID = " + userId + " событие не найдено в БД.");
-        Category category = null;
+        Category category;
         //Если передана категория, то проверяем её наличие в БД.
         if (updateEventUserRequest.getCategory() != null) {
             category = categoryService.getCatOrThrow(updateEventUserRequest.getCategory(),
@@ -498,7 +497,6 @@ public class EventServiceImpl implements EventService {
             throw new OperationFailedException("Невозможно обновить событие, поскольку оно уже опубликовано.");
         }
 
-        LocalDateTime now = LocalDateTime.now();
         if (updateEventUserRequest.getEventDate() != null) {
             checkDateEvent(updateEventUserRequest.getEventDate(), 1);
         }
@@ -534,7 +532,7 @@ public class EventServiceImpl implements EventService {
      */
     @Override
     public List<ParticipationRequestDto> getRequestsEvent(Long userId, Long eventId) {
-        List<ParticipationRequestDto> result = new ArrayList<>();
+        List<ParticipationRequestDto> result;
         userService.getUserOrThrow(userId,
                 "При получении запросов на участие в событиях текущего пользователя " +
                         "не найден пользователь с ID = %d.");

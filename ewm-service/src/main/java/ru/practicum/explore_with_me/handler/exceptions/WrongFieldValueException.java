@@ -11,5 +11,4 @@ public class WrongFieldValueException extends RuntimeException {
         super(message);
         log.error(message);
     }
-
 }

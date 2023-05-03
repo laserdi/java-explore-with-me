@@ -23,6 +23,12 @@ import java.util.List;
 public class CommentUserController {
     private final CommentService commentService;
 
+    /**
+     * Создание комментария.
+     * @param userId         ID пользователя, обновляющего комментарий.
+     * @param commentUserDto входящий объект комментария.
+     * @return созданный комментарий.
+     */
     @PostMapping("/user/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public CommentForView addCommentByUser(@PathVariable("userId") @Positive Long userId,
@@ -33,13 +39,19 @@ public class CommentUserController {
         return commentService.addComment(userId, commentUserDto);
     }
 
+    /**
+     * Получение комментария с ID = {} пользователем с ID = {}.
+     * @param comId  ID комментария.
+     * @param userId ID пользователя, обновляющего комментарий.
+     * @return комментарий.
+     */
     @GetMapping("/{comId}/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public CommentForView getByIdForUser(@PathVariable("userId") @Positive Long userId,
-                                         @PathVariable("comId") @Positive Long commId) {
+                                         @PathVariable("comId") @Positive Long comId) {
         log.info("Получение комментария с ID  = {} пользователем с ID = {}.\t" +
-                "Get /comments/{}/user/{}", commId, userId, commId, userId);
-        return commentService.getCommentById(userId, commId);
+                "Get /comments/{}/user/{}", comId, userId, comId, userId);
+        return commentService.getCommentById(userId, comId);
     }
 
     /**
@@ -61,7 +73,7 @@ public class CommentUserController {
 
     /**
      * Удаление пользователем своего комментария.
-     * @param comId ID комментария.
+     * @param comId  ID комментария.
      * @param userId ID пользователя.
      */
     @DeleteMapping("/{comId}/user/{userId}")
@@ -74,6 +86,9 @@ public class CommentUserController {
 
     /**
      * Получение списка заявок к событию с ID = {}.
+     * @param eventId ID события.
+     * @param from количество комментариев, которые нужно пропустить для формирования текущего набора.
+     * @param size количество комментариев в наборе.
      */
     @GetMapping("/event/{eventId}")
     @ResponseStatus(HttpStatus.OK)

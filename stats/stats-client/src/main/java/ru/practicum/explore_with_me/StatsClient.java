@@ -33,7 +33,6 @@ public class StatsClient {
         this.statsServer = statsServer;
     }
 
-
     /**
      * <p>Получение из БД информации об обращениях к ресурсу.</p>
      * {{baseUrl}}/stats?start=2020-05-05 00:00:00&end=2035-05-05 00:00:00&uris={{uri}}
@@ -85,7 +84,6 @@ public class StatsClient {
                 },
                 uriVariables);
 
-        //
         log.info(response.toString());
         return response;
     }

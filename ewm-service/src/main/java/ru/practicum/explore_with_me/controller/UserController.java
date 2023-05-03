@@ -29,6 +29,9 @@ public class UserController {
      * <p>В случае, если по заданным фильтрам не найдено ни одного пользователя, возвращает пустой список.</p>
      * GET
      * /admin/users
+     * @param ids ID требуемых пользователей.
+     * @param from   количество элементов, которые нужно пропустить для формирования текущего набора.
+     * @param size   количество элементов в наборе. Default value : 10
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -46,6 +49,7 @@ public class UserController {
      * <p>Добавление нового пользователя.</p>
      * POST
      * <p>/admin/users</p>
+     * @param userDto входящие параметры.
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -58,6 +62,7 @@ public class UserController {
      * <p>Удаление пользователя.</p>
      * DELETE
      * <p>/admin/users/{userId}</p>
+     * @param userId ID пользователя.
      */
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

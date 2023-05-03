@@ -69,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentMapper.mapToModelFromDto(inputCommentDto, eventFromDb, userFromDb);
         comment.setCreatedOn(LocalDateTime.now());
         Comment result = commentRepository.save(comment);
-        log.info("Обычныс пользователем создан комментарий с ID = {} в БД.", result.getId());
+        log.info("Обычным пользователем создан комментарий с ID = {} в БД.", result.getId());
         return commentMapper.mapToView(result);
     }
 
@@ -188,7 +188,7 @@ public class CommentServiceImpl implements CommentService {
         Pageable pageable = PageRequest.of(
                 from == 0 ? 0 : (from / size), size);
         Event eventFromDb = eventService.getEventOrThrow(eventId, "При получении списка комментариев " +
-                "к событию не найдено событиес ID = % в БД.");
+                "к событию не найдено событие с ID = % в БД.");
         if (!eventFromDb.getEventState().equals(EventState.PUBLISHED)) {
             //проверяем, что юзер - это инициатор события.
             if (eventFromDb.getInitiator().getId().equals(eventId)) {
@@ -207,7 +207,7 @@ public class CommentServiceImpl implements CommentService {
         //Событие публичное.
         List<Comment> comments = commentRepository.findAllByEvent_Id(eventId, pageable);
         List<CommentForView> result = commentMapper.mapFromModelLisToViewList(comments);
-        log.info("Обычному полбзователю выдан список комментариев к событию с ID = {}, " +
+        log.info("Обычному пользователю выдан список комментариев к событию с ID = {}, " +
                 "состоящий из {} комментариев.", eventId, result.size());
         return result;
     }

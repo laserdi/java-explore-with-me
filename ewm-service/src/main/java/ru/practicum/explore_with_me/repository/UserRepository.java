@@ -8,6 +8,11 @@ import ru.practicum.explore_with_me.model.User;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+    /**
+     * Выдать список всех пользователей.
+     * @param pageable параметры для постраничного отображения.
+     * @return список всех пользователей в БД.
+     */
     Page<User> findAll(Pageable pageable);
 
     /**

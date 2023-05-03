@@ -31,6 +31,12 @@ public class CategoryAdminController {
         return categoryService.save(categoryDto);
     }
 
+    /**
+     * Обновление категории в БД.
+     * @param catId ID обновляемой категории.
+     * @param categoryDto входные данные обновляемой категории.
+     * @return обновлённая категория.
+     */
     @PatchMapping("/{catId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryDto updateCategory(@PositiveOrZero @PathVariable Long catId,
@@ -39,11 +45,14 @@ public class CategoryAdminController {
         return categoryService.update(catId, categoryDto);
     }
 
+    /**
+     * Удаление категории по ID.
+     * @param catId ID категории.
+     */
     @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PositiveOrZero @PathVariable Long catId) {
         log.info("DELETE/admin/categories/ catId={}", catId);
         categoryService.delete(catId);
     }
-
 }

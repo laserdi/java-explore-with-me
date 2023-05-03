@@ -26,11 +26,14 @@ public class Event {
     private Long id;
 
     /**
-     * Краткое описание.
+     * Краткое описание события.
      */
     @Column(name = "annotation", length = 2000)
     private String annotation;
 
+    /**
+     * Категория события.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cat_id")
     private Category category;

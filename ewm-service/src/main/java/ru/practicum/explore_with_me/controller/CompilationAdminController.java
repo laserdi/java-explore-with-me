@@ -43,7 +43,12 @@ public class CompilationAdminController {
         compilationService.deleteCompilation(compId);
     }
 
-
+    /**
+     * Обновление подборки событий.
+     * @param compId                   ID подборки.
+     * @param updateCompilationRequest обновляемый объект подборки.
+     * @return обновлённая подборка.
+     */
     @PatchMapping("/{compId}")
     @ResponseStatus(HttpStatus.OK)
     public CompilationDto update(@PathVariable Long compId,

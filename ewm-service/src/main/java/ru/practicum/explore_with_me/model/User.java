@@ -7,18 +7,9 @@ import lombok.Setter;
 import javax.persistence.*;
 
 /**
- * email*	string
- * example: petrov.i@practicummail.ru
- * Почтовый адрес
- *
- * id	integer($int64)
- * readOnly: true
- * example: 1
- * Идентификатор
- *
- * name*	string
- * example: Петров Иван
- * Имя
+ * email - почтовый адрес
+ * <p>id - идентификатор</p>
+ * name - имя
  */
 @Getter
 @Setter

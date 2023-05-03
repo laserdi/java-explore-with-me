@@ -25,14 +25,14 @@ public class EventAdminController {
 
     /**
      * Эндпоинт возвращает полную информацию обо всех событиях подходящих под переданные условия.
-     * @param users список id пользователей, чьи события нужно найти.
-     * @param states список состояний в которых находятся искомые события.
+     * @param users      список id пользователей, чьи события нужно найти.
+     * @param states     список состояний в которых находятся искомые события.
      * @param categories список id категорий в которых будет вестись поиск.
      * @param rangeStart дата и время не раньше которых должно произойти событие.
-     * @param rangeEnd дата и время не позже которых должно произойти событие.
-     * @param text текст поиска в аннотации и описании.
-     * @param from количество событий, которые нужно пропустить для формирования текущего набора.
-     * @param size количество событий в наборе.
+     * @param rangeEnd   дата и время не позже которых должно произойти событие.
+     * @param text       текст поиска в аннотации и описании.
+     * @param from       количество событий, которые нужно пропустить для формирования текущего набора.
+     * @param size       количество событий в наборе.
      * @return список событий.
      */
     @GetMapping
@@ -52,6 +52,12 @@ public class EventAdminController {
                 rangeStart, rangeEnd, text, from, size);
     }
 
+    /**
+     * Обновление события.
+     * @param eventId                 ID события.
+     * @param updateEventAdminRequest входящие параметры для обновления.
+     * @return обновлённое событие.
+     */
     @PatchMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto update(@PositiveOrZero @PathVariable Long eventId,

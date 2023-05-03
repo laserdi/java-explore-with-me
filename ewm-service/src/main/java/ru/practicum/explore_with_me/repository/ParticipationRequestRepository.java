@@ -18,16 +18,18 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
 
     /**
      * Проверить участвует ли пользователь в этом событии.
+     * @param userId ID пользователя.
+     * @param eventId ID события.
      */
     @Query("select count(p) from ParticipationRequest p where p.requester.id = ?1 and p.event.id = ?2")
     int countAllByRequester_IdAndEvent_Id(Long userId, Long eventId);
 
     /**
      * Запрос списка подтверждённых запросов на участие в определённом событии (для определения лимита запросов).
+     * @param eventId ID события.
      */
     @Query("select p from ParticipationRequest p where p.event.id = ?1 and p.statusRequest = 'CONFIRMED'")
     List<ParticipationRequest> findConfirmedRequests(Long eventId);
-
 
     /**
      * Поиск списка заявок на участие в событиях из списка.
@@ -45,5 +47,10 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
      */
     List<ParticipationRequest> findByIdInOrderByIdAsc(List<Long> requestIds);
 
+    /**
+     * <p>Список запросов на участие в событии.</p>
+     * @param eventId ID события.
+     * @return список запросов.
+     */
     List<ParticipationRequest> findAllByEvent_Id(Long eventId);
 }

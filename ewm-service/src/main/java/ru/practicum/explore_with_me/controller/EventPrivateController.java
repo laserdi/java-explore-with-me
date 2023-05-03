@@ -82,14 +82,12 @@ public class EventPrivateController {
     }
 
     /**
-     * Изменение события добавленного текущим пользователем
+     * Изменение события, добавленного текущим пользователем.
      * <p>PATCH /users/{userId}/events</p>
      * @param userId                 ID пользователя.
      * @param updateEventUserRequest обновляющее событие.
      * @return обновлённое событие.
      */
-
-
     @PatchMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEvent(@PathVariable @Positive Long userId,

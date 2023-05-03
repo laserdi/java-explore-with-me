@@ -24,6 +24,13 @@ public interface StatRepository extends JpaRepository<Stat, Long> {
             "order by count (distinct s.ip) desc")
     List<StatWithHits> findAllUniqueWhenUriIsEmpty(LocalDateTime start, LocalDateTime end);
 
+    /**
+     * Вывести количество посещений для списка эндпоинтов.
+     * @param start момент начала периода.
+     * @param end   момент окончания периода.
+     * @param uris список эндпоинтов.
+     * @return статистику в формате другого класса (с подсчётом посещений).
+     */
     @Query("select new ru.practicum.explore_with_me.dto.StatWithHits(s.app.app, s.uri, count (distinct s.ip)) "
             + "from Stat s "
             + "where s.timestamp between ?1 and ?2 "
